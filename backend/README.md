@@ -12,6 +12,6 @@ Para ejecutar el backend
 
         pip install -r requirements.txt
 
-4.  Desde la terminal con el entorno activo dentro del directorio app
+4.  Desde la terminal con el entorno activo dentro del directorio de backend
 
-        python main.py
+        uvicorn app.main:app --reload
