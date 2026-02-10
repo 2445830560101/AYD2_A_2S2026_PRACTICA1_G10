@@ -1,0 +1,42 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@test.com",
+      "password": "123456",
+      "name": "Administrador",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "email": "agente@test.com",
+      "password": "123456",
+      "name": "Agente Inmobiliario",
+      "role": "agente"
+    },
+    {
+      "id": 3,
+      "email": "cliente@test.com",
+      "password": "123456",
+      "name": "Cliente",
+      "role": "cliente"
+    }
+  ],
+  "dashboard": {
+    "totalUsers": 3,
+    "propiedades": 12,
+    "citasHoy": 4
+  },
+  "menu": {
+    "admin": [
+      { "name": "Dashboard", "path": "/dashboard" },
+      { "name": "Usuarios", "path": "/dashboard/admin" }
+    ],
+    "agente": [
+      { "name": "Mis Propiedades", "path": "/dashboard/agente" }
+    ],
+    "cliente": [
+      { "name": "Buscar Propiedades", "path": "/dashboard/cliente" }
+    ]
+  }
+}

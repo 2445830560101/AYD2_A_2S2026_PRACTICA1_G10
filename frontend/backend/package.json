@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Servidor JSON para pruebas",
+  "main": "server.js",
+  "scripts": {
+  "start": "json-server --watch db.json --port 3001",
+  "dev": "json-server --watch db.json --port 3001"
+},
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.5",
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
