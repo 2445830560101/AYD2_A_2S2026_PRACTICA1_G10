@@ -74,10 +74,10 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Crear Nueva Cuenta". | Redirigir a formulario para registro. |
+| 1 | Seleccionar opción "Regístrate aquí" en formulario de inicio se desión. | Redirigir a formulario para registro. |
 | 2 | Ingresa Nombre completo, Correo electrónico, Contraseña. | Valida formato de campos. |
 | 2.1 | Si el cliente decide adjuntar fotografía deberá seleccionar "Subir Fotografía" y elegir archivo de imagen. | Si el actor decide adjuntar fotografía, el sistema deberá abrir el explorador de archivos y cargar una previsualización del archivo cargado. |
-| 3 | Selecciona "Registrar". | Registro de cliente en sistema y confirma éxito. |
+| 3 | Selecciona "Registrarme". | Registro de cliente en sistema y confirma éxito. |
 
 #### Excepciones
 
@@ -173,7 +173,7 @@
 | :--- | :--- | :--- |
 | 1 | Seleccionar opción "Registrar Agente". | Redirigir a formulario para registro. |
 | 2 | Ingresa Nombre completo, Correo electrónico, Contraseña. | Valida formato de campos. |
-| 3 | Selecciona "Registrar". | Registro de Agente en sistema y confirma éxito. |
+| 3 | Selecciona "Registrarme". | Registro de Agente en sistema y confirma éxito. |
 
 #### Excepciones
 
@@ -415,16 +415,13 @@
 | :--- | :--- | :--- |
 | 1 | Selecciona "Nuevo Tipo de Inmueble". | Muestra formulario de registro. |
 | 2 | Ingresa nombre y descripción. | Valida formato de campos. |
-| 3 | Agregar los campos que se pueden definir para dicho tipo (nombre y tipo de dato). | Agrega campo ingresado al listado. |
-| 3.1 | Si se desea que el campo sea obligatorio marcar casilla "Obligatorio". | El sistema marca el campo como obligatorio para el proceso de registro de propiedad. |
-| 4 | Selecciona "Agregar". | Se agrega tipo de inmueble dentro del sistema. |
+| 3 | Selecciona "Agregar". | Se agrega tipo de inmueble dentro del sistema. |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
 | 1 | No ingresa campos obligatorios. | Mensaje de error "Falta campos obligatorios". |
-| 2 | Campo con nombre repetido ingresado. | Mensaje de error "Campos duplicados". |
 
 ---
 
@@ -448,7 +445,6 @@
 | :--- | :--- | :--- |
 | 1 | Selección de "Agregar" (Editar) en listado de Tipos de Inmueble. | Abrir formulario. |
 | 2 | Modifica los campos deseados. | Valida los cambios. |
-| 3.1 | Si se desea agregar campos, ingresa nombre y tipo. | Agrega un nuevo campo disponible. |
 | 4 | Selecciona "Actualizar". | Sobrescribe datos y confirma. |
 
 #### Excepciones
