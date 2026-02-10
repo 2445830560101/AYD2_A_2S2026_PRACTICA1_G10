@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from core.database import Base
+from app.core.database import Base
 
 
 class Propiedad(Base):

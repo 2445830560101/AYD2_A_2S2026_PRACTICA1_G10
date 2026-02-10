@@ -96,11 +96,11 @@ INSERT INTO tipos_inmueble (nombre) VALUES
 
 
 
--- insertar un usuario administrador con contraseña hasheada (admin123) para pruebas. La contraseña se ha generado utilizando bcrypt con un costo de 12.
--- INSERT INTO usuarios (nombre_completo, correo, password, rol_id)
--- VALUES (
---     'Administrador del Sistema',
---     'admin@homefinder.com',
---     '$2b$12$C9o7wzv5z8QKzXyQ1h9b7uHf5YkFZV6l3Fv9jWZ0r7Jm9F3KpY1B6', -- admin123
---     (SELECT id FROM roles WHERE nombre = 'Administrador')
--- );
+-- insertar un usuario administrador con contraseña hasheada (admin123) para pruebas. La contraseña se ha generado utilizando bcrypt.
+INSERT INTO usuarios (nombre_completo, correo, password, rol_id)
+VALUES (
+    'Administrador del Sistema',
+    'admin@gmail.com',
+    '$2b$12$r95SQd5iZ5/.NuvAj8viGe/ZbuNvTdYo9neS1PM25iRxkdAbzo8Xm', -- admin123
+    (SELECT id FROM roles WHERE nombre = 'Administrador')
+);
