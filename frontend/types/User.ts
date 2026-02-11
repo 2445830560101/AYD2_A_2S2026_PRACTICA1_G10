@@ -9,7 +9,7 @@ export interface User {
   nombre_completo: string
   correo: string
   rol: UserRole
-  password: string
+  password?: string
   foto?: string
 }
 

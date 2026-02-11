@@ -5,6 +5,7 @@ from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate, UsuarioResp
 from app.services.usuario_service import registrar_usuario, editar_usuario
 from app.core.security import verify_token
 from app.models.usuario import Usuario
+from typing import List
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -57,6 +58,23 @@ def registro_usuario(
             status_code=409,
             detail=str(e)
         )
+
+
+@router.get("/", response_model=List[UsuarioResponse])
+def obtener_usuarios(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los usuarios registrados"""
+    usuarios = db.query(Usuario).all()
+    
+    return [
+        {
+            "id": usuario.id,
+            "nombre_completo": usuario.nombre_completo,
+            "correo": usuario.correo,
+            "rol": usuario.rol.nombre,
+            "foto": usuario.foto
+        }
+        for usuario in usuarios
+    ]
 
 
 @router.get("/me", response_model=UsuarioResponse)

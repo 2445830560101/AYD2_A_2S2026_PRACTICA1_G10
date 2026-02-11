@@ -204,7 +204,26 @@ export default function RoleSidebar({ role }: { role: Role }) {
     }
 
     // --- VISTA CLIENTE (NUEVA IMPLEMENTACIÓN) ---
-    if (role === 'cliente') {
+    else if (role === 'admin') {
+        return (
+            <div className="sidebar bg-light border-end" style={{ width: '275px', minHeight: '100vh' }}>
+                <div className="d-flex flex-column h-100 p-3">
+                    <h4 className="text-primary mb-4">Administrador</h4>
+
+                    {/* Logout Cliente */}
+                    <div className="mt-auto pt-3 border-top">
+                        <button
+                            className="nav-link text-danger w-100 text-start bg-transparent border-0 px-0"
+                            onClick={handleLogout}
+                        >
+                            <i className="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    else if (role === 'cliente') {
         return (
             <div className="sidebar bg-light border-end" style={{ width: '275px', minHeight: '100vh' }}>
                 <div className="d-flex flex-column h-100 p-3">
