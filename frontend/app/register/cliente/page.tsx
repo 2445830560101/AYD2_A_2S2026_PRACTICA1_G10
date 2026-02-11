@@ -52,7 +52,7 @@ export default function RegisterClientPage() {
                 formData.password,
                 photo || undefined
             );
-            router.push('/login')
+            router.push('/')
         } catch (err: any) {
             setError(err.message || 'Error al registrar cliente')
         } finally {

@@ -1,5 +1,5 @@
 import { User, Client } from "@/types/User";
-import { API_URL, getHeaders } from './apiConfig'
+import { API_URL, getHeaders, getFormHeaders } from './apiConfig'
 import { UserAuth } from "@/types/Auth";
 
 export async function login(
@@ -47,8 +47,9 @@ export async function register_client(
 		throw new Error("Todos los campos son obligatorios")
 	}
 
-	const res = await fetch(`${API_URL}/clients`, {
+	const res = await fetch(`${API_URL}/usuarios/registro`, {
 		method: "POST",
+		headers: getFormHeaders(),
 		body: formData,
 	})
 
