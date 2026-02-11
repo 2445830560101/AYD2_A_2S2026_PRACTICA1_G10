@@ -27,4 +27,5 @@ class Database:
 
 
 db = Database()
+SessionLocal = db.SessionLocal
 Base = declarative_base()

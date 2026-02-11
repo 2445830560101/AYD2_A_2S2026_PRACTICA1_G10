@@ -6,7 +6,11 @@ class UsuarioCreate(BaseModel):
     nombre_completo: str
     correo: EmailStr
     password: str
-    foto: Optional[str] = None
+
+
+class UsuarioUpdate(BaseModel):
+    nombre_completo: Optional[str] = None
+    password: Optional[str] = None
 
 
 class UsuarioResponse(BaseModel):
@@ -14,6 +18,7 @@ class UsuarioResponse(BaseModel):
     nombre_completo: str
     correo: EmailStr
     rol: str
+    foto: Optional[str] = None
 
     class Config:
         from_attributes = True
