@@ -24,3 +24,14 @@ class PropiedadResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+    
+class PropiedadUpdate(BaseModel):
+        titulo: Optional[str] = None
+        direccion: Optional[str] = None
+        precio: Optional[float] = None
+        descripcion: Optional[str] = None
+        habitaciones: Optional[int] = None
+        banos: Optional[int] = None
+        metros_cuadrados: Optional[float] = None
+        tipo_id: Optional[int] = None
