@@ -13,18 +13,4 @@ def login_usuario(db: Session, correo: str, password: str):
     if not verify_password(password, usuario.password):
         return None  # Contraseña incorrecta
 
-    # Crear token JWT
-    token_data = {
-        "sub": str(usuario.id),  # user_id
-        "rol": usuario.rol.nombre
-    }
-    access_token = crear_access_token(token_data)
-
-    # Devolver usuario + token
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "id": usuario.id,
-        "correo": usuario.correo,
-        "rol": usuario.rol.nombre
-    }
+    return usuario

@@ -1,8 +1,10 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import jwt, JWTError
 from typing import Optional
 from app.core.config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 
 # Configuración del hash
 pwd_context = CryptContext(
@@ -10,9 +12,10 @@ pwd_context = CryptContext(
     deprecated="auto"
 )
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
 # Hash de contraseñas
-
-
 def hash_password(password: str) -> str:
     """
     Encripta la contraseña antes de guardarla en la base de datos
@@ -38,6 +41,17 @@ def crear_access_token(data: dict, expires_delta: Optional[timedelta] = None) ->
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY,
                              algorithm=JWT_ALGORITHM)
     return encoded_jwt
+
+
+def verify_token(token: str = Depends(oauth2_scheme)) -> dict:
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        return payload
+    except JWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido o expirado"
+        )
 
 
 def decode_access_token(token: str) -> dict:

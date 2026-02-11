@@ -1,46 +1,86 @@
 from sqlalchemy.orm import Session
+from fastapi import UploadFile
 from app.models.usuario import Usuario
 from app.models.rol import Rol
-from app.schemas.usuario_schema import UsuarioCreate
+from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 from app.core.security import hash_password
-import shutil
 import os
-from fastapi import UploadFile  # Necesario para tipar la imagen
+import shutil
+import uuid
 
-# Carpeta donde se guardarán las imágenes
 UPLOAD_DIR = "imagenes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-def registrar_cliente(db: Session, usuario: UsuarioCreate, foto: UploadFile = None):
-    # Verificar si el correo ya existe
-    existe = db.query(Usuario).filter(Usuario.correo == usuario.correo).first()
-    if existe:
+# 🔹 REGISTRAR CLIENTE
+def registrar_cliente(
+    db: Session,
+    usuario: UsuarioCreate,
+    foto: UploadFile | None = None
+):
+    # Validar correo único
+    if db.query(Usuario).filter(Usuario.correo == usuario.correo).first():
         raise ValueError("El correo ya está registrado")
 
     # Obtener rol CLIENTE
     rol_cliente = db.query(Rol).filter(Rol.nombre == "Cliente").first()
     if not rol_cliente:
-        raise ValueError("No existe el rol CLIENTE")
+        raise ValueError("No existe el rol Cliente")
 
-    # Guardar la imagen si se envía
+    # Guardar foto (si existe)
     ruta_foto = None
     if foto:
-        ruta_foto = os.path.join(UPLOAD_DIR, foto.filename)
+        extension = os.path.splitext(foto.filename)[1]
+        nombre_unico = f"{uuid.uuid4()}{extension}"
+        ruta_foto = os.path.join(UPLOAD_DIR, nombre_unico)
+
         with open(ruta_foto, "wb") as buffer:
             shutil.copyfileobj(foto.file, buffer)
 
-    # Crear el usuario
-    nuevo_usuario = Usuario(
+    # Crear usuario
+    nuevo = Usuario(
         nombre_completo=usuario.nombre_completo,
         correo=usuario.correo,
         password=hash_password(usuario.password),
         rol_id=rol_cliente.id,
-        foto=ruta_foto  # Guardas la ruta en la base de datos
+        foto=ruta_foto
     )
 
-    db.add(nuevo_usuario)
+    db.add(nuevo)
     db.commit()
-    db.refresh(nuevo_usuario)
+    db.refresh(nuevo)
+    return nuevo
 
-    return nuevo_usuario
+
+# 🔹 EDITAR CLIENTE
+def editar_cliente(
+    db: Session,
+    usuario_id: int,
+    datos: UsuarioUpdate,
+    foto: UploadFile = None
+):
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario:
+        raise ValueError("Cliente no encontrado")
+
+    # Cambios parciales
+    if datos.nombre_completo:
+        usuario.nombre_completo = datos.nombre_completo
+
+    if datos.password:
+        usuario.password = hash_password(datos.password)
+
+    # Guardar foto como en registrar_cliente
+    if foto:
+        extension = os.path.splitext(foto.filename)[1]
+        nombre_unico = f"{uuid.uuid4()}{extension}"
+        ruta_foto = os.path.join(UPLOAD_DIR, nombre_unico)
+
+        with open(ruta_foto, "wb") as buffer:
+            shutil.copyfileobj(foto.file, buffer)
+
+        usuario.foto = ruta_foto
+
+    db.commit()
+    db.refresh(usuario)
+    return usuario
