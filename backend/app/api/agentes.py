@@ -6,7 +6,7 @@ from app.services.usuario_service import registrar_usuario, editar_usuario
 from app.core.security import verify_token
 from app.models.usuario import Usuario
 
-router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
+router = APIRouter(prefix="/agentes", tags=["Agentes"])
 
 
 def get_db():
@@ -29,7 +29,7 @@ def get_current_user(
 
 
 @router.post("/registro")
-def registro_usuario(
+def registro_agente(
     nombre_completo: str = Form(...),
     correo: str = Form(...),
     password: str = Form(...),
@@ -43,7 +43,7 @@ def registro_usuario(
             password=password
         )
 
-        nuevo = registrar_usuario(db, usuario_data, foto)
+        nuevo = registrar_usuario(db, usuario_data, foto, rol_nombre="Agente")
 
         return {
             "message": "Usuario registrado correctamente",
