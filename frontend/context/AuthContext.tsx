@@ -15,7 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  //  Cargar sesión persistida
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {

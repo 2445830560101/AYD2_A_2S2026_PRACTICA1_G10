@@ -7,32 +7,32 @@ import { useRouter } from 'next/navigation';
 export default function RoleSidebar({ role }) {
   const router = useRouter();
   const [activeMenu, setActiveMenu] = useState('dashboard');
-  const [propertySubMenu, setPropertySubMenu] = useState(true);
+  const [propertySubMenu, setPropertySubMenu] = useState(false);
   const [appointmentSubMenu, setAppointmentSubMenu] = useState(false);
   const [analyticsSubMenu, setAnalyticsSubMenu] = useState(false);
 
   const handleLogout = () => {
+    
     localStorage.removeItem('authToken');
     router.push('/');
   };
 
-  // Menú para el rol de agente
+ 
   if (role === 'agente') {
     return (
-      <div className="sidebar bg-light border-end" style={{ width: '250px', minHeight: '100vh' }}>
+      <div className="sidebar bg-light border-end" style={{ width: '250px' }}>
         <div className="p-3">
           <h4 className="text-primary mb-4">Panel de Control</h4>
           
           {/* Menú Principal */}
           <ul className="nav flex-column">
-            {/* Dashboard */}
             <li className="nav-item mb-1">
               <Link 
                 href="/agente/dashboard" 
                 className={`nav-link ${activeMenu === 'dashboard' ? 'active bg-primary text-white' : ''}`}
                 onClick={() => setActiveMenu('dashboard')}
               >
-                <i className="bi bi-speedometer2 me-2"></i> Dashboard
+                <i className="bi bi-speedometer me-2"></i> Dashboard
               </Link>
             </li>
             
@@ -46,7 +46,7 @@ export default function RoleSidebar({ role }) {
                   setPropertySubMenu(!propertySubMenu);
                 }}
               >
-                <i className="bi bi-house-door me-2"></i> Gestión de Propiedades
+                <i className="bi bi-building me-2"></i> Gestión de Propiedades
                 <i className={`bi ${propertySubMenu ? 'bi-chevron-down' : 'bi-chevron-right'} float-end`}></i>
               </a>
               
@@ -56,7 +56,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/propiedades/registrar" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('properties')}
                     >
                       <i className="bi bi-plus-circle me-2"></i> Registrar Propiedad
                     </Link>
@@ -65,7 +64,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/propiedades/buscar" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('properties')}
                     >
                       <i className="bi bi-search me-2"></i> Buscar Propiedad
                     </Link>
@@ -74,7 +72,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/propiedades/actualizar" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('properties')}
                     >
                       <i className="bi bi-pencil-square me-2"></i> Actualizar Propiedad
                     </Link>
@@ -83,7 +80,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/propiedades/eliminar" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('properties')}
                     >
                       <i className="bi bi-trash me-2"></i> Eliminar Propiedad
                     </Link>
@@ -112,16 +108,14 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/citas/solicitudes" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('appointments')}
                     >
-                      <i className="bi bi-list-task me-2"></i> Ver Solicitudes
+                      <i className="bi bi-list me-2"></i> Ver Solicitudes
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link 
                       href="/agente/citas/rechazadas" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('appointments')}
                     >
                       <i className="bi bi-x-circle me-2"></i> Motivos de Rechazo
                     </Link>
@@ -130,7 +124,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/citas/proponer" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('appointments')}
                     >
                       <i className="bi bi-clock me-2"></i> Proponer Horario
                     </Link>
@@ -139,9 +132,8 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/citas/agendadas" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('appointments')}
                     >
-                      <i className="bi bi-calendar-event me-2"></i> Citas Agendadas
+                      <i className="bi bi-calendar me-2"></i> Citas Agendadas
                     </Link>
                   </li>
                 </ul>
@@ -168,7 +160,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/graficas/top-zonas" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('analytics')}
                     >
                       <i className="bi bi-geo-alt me-2"></i> Top 5 Zonas
                     </Link>
@@ -177,7 +168,6 @@ export default function RoleSidebar({ role }) {
                     <Link 
                       href="/agente/graficas/top-tipos" 
                       className="nav-link"
-                      onClick={() => setActiveMenu('analytics')}
                     >
                       <i className="bi bi-building me-2"></i> Top 3 Tipos de Inmuebles
                     </Link>
@@ -187,14 +177,11 @@ export default function RoleSidebar({ role }) {
             </li>
             
             {/* Cerrar sesión */}
-            <li className="nav-item mt-auto pt-3 border-top">
+            <li className="nav-item mt-3 pt-3 border-top">
               <a 
                 href="#" 
                 className="nav-link text-danger"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogout();
-                }}
+                onClick={handleLogout}
               >
                 <i className="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
               </a>
@@ -204,6 +191,7 @@ export default function RoleSidebar({ role }) {
       </div>
     );
   }
+  
   
   return null;
 }
