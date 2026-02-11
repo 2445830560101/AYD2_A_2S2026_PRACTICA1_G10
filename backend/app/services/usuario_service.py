@@ -12,20 +12,21 @@ UPLOAD_DIR = "imagenes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# 🔹 REGISTRAR CLIENTE
-def registrar_cliente(
+# 🔹 REGISTRAR USUARIO
+def registrar_usuario(
     db: Session,
     usuario: UsuarioCreate,
-    foto: UploadFile | None = None
+    foto: UploadFile | None = None,
+    rol_nombre: str = "Cliente"
 ):
     # Validar correo único
     if db.query(Usuario).filter(Usuario.correo == usuario.correo).first():
         raise ValueError("El correo ya está registrado")
 
-    # Obtener rol CLIENTE
-    rol_cliente = db.query(Rol).filter(Rol.nombre == "Cliente").first()
-    if not rol_cliente:
-        raise ValueError("No existe el rol Cliente")
+    # Obtener rol dinámicamente
+    rol_obj = db.query(Rol).filter(Rol.nombre == rol_nombre).first()
+    if not rol_obj:
+        raise ValueError(f"No existe el rol {rol_nombre}")
 
     # Guardar foto (si existe)
     ruta_foto = None
@@ -42,7 +43,7 @@ def registrar_cliente(
         nombre_completo=usuario.nombre_completo,
         correo=usuario.correo,
         password=hash_password(usuario.password),
-        rol_id=rol_cliente.id,
+        rol_id=rol_obj.id,
         foto=ruta_foto
     )
 
@@ -52,8 +53,8 @@ def registrar_cliente(
     return nuevo
 
 
-# 🔹 EDITAR CLIENTE
-def editar_cliente(
+# 🔹 EDITAR USUARIO
+def editar_usuario(
     db: Session,
     usuario_id: int,
     datos: UsuarioUpdate,
@@ -61,7 +62,7 @@ def editar_cliente(
 ):
     usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
-        raise ValueError("Cliente no encontrado")
+        raise ValueError("Usuario no encontrado")
 
     # Cambios parciales
     if datos.nombre_completo:
