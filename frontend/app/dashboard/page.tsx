@@ -10,7 +10,7 @@ export default function AgenteDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user || user.role !== 'agente') {
+    if (!user || user.rol !== 'agente') {
       router.push('/');
     }
   }, [user, router]);

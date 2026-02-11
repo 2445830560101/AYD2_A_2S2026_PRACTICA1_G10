@@ -16,7 +16,7 @@ export default function CitasAgendadas() {
 
   useEffect(() => {
     if (!user || user.role !== 'agente') {
-      router.push('/');
+      // router.push('/');
     }
   }, [user, router]);
 
