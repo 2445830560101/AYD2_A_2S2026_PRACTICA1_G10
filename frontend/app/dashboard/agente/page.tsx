@@ -10,12 +10,12 @@ export default function AgenteDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user || user.role !== 'agente') {
-      router.push('/');
+    if (!user || user.rol !== 'agente') {
+      // router.push('/');
     }
   }, [user, router]);
 
-  if (!user) return null;
+  // if (!user) return null;
 
   return (
     <div className="d-flex">
@@ -26,7 +26,7 @@ export default function AgenteDashboard() {
         <p className="mb-4">Gestión de propiedades y citas</p>
 
         <div className="alert alert-info mb-4">
-          Bienvenido <strong>{user.name}</strong> - {user.email}
+          Bienvenido <strong>{user?.nombre_completo}</strong> - {user?.correo}
         </div>
 
         {/* Contenido principal del dashboard */}

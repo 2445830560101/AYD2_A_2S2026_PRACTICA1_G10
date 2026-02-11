@@ -1,11 +1,30 @@
-import { User, Client, UserRole } from "@/types/User"
+import { Client, createClient } from "@/types/User"
 import { Appointment, ViewingStatus } from "@/types/Appointment"
 import { Property } from "@/types/Property"
 
-const API_URL = "http://localhost:3001";
+let mockup_data = <Client[]>[
+    createClient({
+        id: 1,
+        nombre_completo: 'Juan Pérez',
+        correo: 'juan@gmail.com',
+        password: 'hashed_password',
+        foto: 'https://placehold.co/200x200'
+    }),
+    createClient({
+        id: 2,
+        nombre_completo: 'María Gómez',
+        correo: 'mar@gmail.com',
+        password: 'hashed_password',
+        foto: 'https://placehold.co/200x200'
+    })
+]
+
+export async function get_clients(): Promise<Client[]> {
+
+    return new Promise<Client[]>((resolve) => setTimeout(() => resolve(mockup_data), 500));
+}
 
 // Favoritos
-
 export async function get_favorites(user_id: number): Promise<Property[]> {
   // TODO: Implementar carga de favoritos desde backend
 
@@ -115,14 +134,13 @@ export async function reject_appointment(appointment_id: number, reasong: string
 
 export async function get_client_profile(cliente_id: number): Promise<Client> {
     // TODO: Implementar carga de perfil de cliente
-    const mockup_data: Client = {
+    const mockup_data = createClient({
         id: cliente_id,
         nombre_completo: 'Juan Pérez',
         correo: 'juan@gmail.com',
         password: 'hashed_password',
-        foto: 'https://placehold.co/200x200',
-        rol: UserRole.CLIENT
-    }
+        foto: 'https://placehold.co/200x200'
+    });
 
     return mockup_data;
 }
@@ -133,4 +151,18 @@ export async function update_client(cliente_id: number, nombre_completo: string,
 
 export async function delete_client(cliente_id: number): Promise<void> {
     //TODO: Implementar eliminación de perfil de cliente
+}
+
+
+export async function create_client(data: any) {
+    //TODO: Implementar creación de cliente en backend
+    const form = new FormData()
+    form.append('nombre_completo', data.nombre_completo)
+    form.append('email', data.correo)
+    form.append('password', data.password)
+
+    if (data.foto) {
+        form.append('foto', data.foto)
+    }
+
 }

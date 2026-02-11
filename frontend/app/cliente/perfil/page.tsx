@@ -1,11 +1,9 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import RoleSidebar from '@/components/RoleSidebar';
-import { Container, Card, Form, Button, Image, Modal, Alert, Row, Col } from 'react-bootstrap';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-// Asumimos que existen estos servicios (debes crearlos en services/clientService.ts)
+import { useState, useEffect } from 'react'
+import RoleSidebar from '@/components/RoleSidebar'
+import { Container, Card, Form, Button, Image, Modal, Alert, Row, Col } from 'react-bootstrap'
+import { useAuth } from '@/context/AuthContext'
 import { update_client, delete_client } from '@/services/clientService'
 
 export default function PerfilPage() {
@@ -14,16 +12,16 @@ export default function PerfilPage() {
     // Estados del formulario
     const [formData, setFormData] = useState({
         nombre_completo: '',
-        password: '', // Opcional según CU
+        password: ''
     });
     const [photo, setPhoto] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     // Estados de Modales y Feedback
-    const [showUpdateModal, setShowUpdateModal] = useState(false); // Para CU-01.01.02 Paso 4
-    const [showDeleteModal, setShowDeleteModal] = useState(false); // Para CU-01.01.03 Paso 2
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'danger', text: string } | null>(null);
+    const [showUpdateModal, setShowUpdateModal] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState<{ type: 'success' | 'danger', text: string } | null>(null)
 
     // Cargar datos iniciales
     useEffect(() => {
@@ -31,28 +29,28 @@ export default function PerfilPage() {
             setFormData({
                 nombre_completo: user.nombre_completo || '',
                 password: '',
-            });
-            setPreviewUrl(user.foto || null);
+            })
+            setPreviewUrl(user.foto || null)
         }
-    }, [user]);
+    }, [user])
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setPhoto(file);
-            setPreviewUrl(URL.createObjectURL(file));
+            const file = e.target.files[0]
+            setPhoto(file)
+            setPreviewUrl(URL.createObjectURL(file))
         }
-    };
+    }
 
     const handleUpdateClick = (e: React.FormEvent) => {
-        e.preventDefault();
-        setShowUpdateModal(true);
-    };
+        e.preventDefault()
+        setShowUpdateModal(true)
+    }
 
     const confirmUpdate = async () => {
-        setLoading(true);
-        setShowUpdateModal(false);
-        setMessage(null);
+        setLoading(true)
+        setShowUpdateModal(false)
+        setMessage(null)
 
         try {
             await update_client(
@@ -60,48 +58,48 @@ export default function PerfilPage() {
                 formData.nombre_completo,
                 formData.password,
                 (photo as any)
-            );
+            )
 
             const usuarioActualizado = {
                 ...user!,
                 nombre_completo: formData.nombre_completo,
                 foto: previewUrl || user!.foto
-            };
+            }
 
-            login(usuarioActualizado);
-            setMessage({ type: 'success', text: 'Datos actualizados correctamente.' });
+            login(usuarioActualizado)
+            setMessage({ type: 'success', text: 'Datos actualizados correctamente.' })
         } catch (error) {
-            setMessage({ type: 'danger', text: 'Error al actualizar los datos.' });
+            setMessage({ type: 'danger', text: 'Error al actualizar los datos.' })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const handleDeleteClick = () => {
-        setShowDeleteModal(true);
-    };
+        setShowDeleteModal(true)
+    }
 
     const confirmDelete = async () => {
-        setLoading(true);
+        setLoading(true)
         try {
             await delete_client(user!.id);
-            logout();
+            logout()
         } catch (error) {
-            setShowDeleteModal(false);
-            setMessage({ type: 'danger', text: 'No se pudo eliminar la cuenta.' });
-            setLoading(false);
+            setShowDeleteModal(false)
+            setMessage({ type: 'danger', text: 'No se pudo eliminar la cuenta.' })
+            setLoading(false)
         }
-    };
+    }
 
     return (
         <div className="d-flex bg-light min-vh-100">
             <RoleSidebar role="cliente" />
-            <Container className="p-5">
-                <h2 className="text-primary fw-bold mb-4">Mi Perfil</h2>
+            <Container className="p-5 d-flex flex-column align-items-center">
+                <h2 className="text-primary fw-bold mb-4 w-100 text-center">Mi Perfil</h2>
 
-                {message && <Alert variant={message.type} onClose={() => setMessage(null)} dismissible>{message.text}</Alert>}
+                {message && <Alert variant={message.type} onClose={() => setMessage(null)} dismissible className="w-100">{message.text}</Alert>}
 
-                <Card className="shadow-sm border-0 rounded-4 p-4" style={{ maxWidth: '700px' }}>
+                <Card className="shadow-sm border-0 rounded-4 p-4" style={{ maxWidth: '700px', width: '100%' }}>
                     <Card.Body>
                         <Form onSubmit={handleUpdateClick}>
 

@@ -173,9 +173,10 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Registrar Agente". | Redirigir a formulario para registro. |
+| 1 | Seleccionar opción "Registrar Nuevo Agente". | Muestra formulario para registro. |
 | 2 | Ingresa Nombre completo, Correo electrónico, Contraseña. | Valida formato de campos. |
-| 3 | Selecciona "Registrarme". | Registro de Agente en sistema y confirma éxito. |
+| 2.1 | Si el administrador decide adjuntar fotografía deberá seleccionar "Subir Fotografía" y elegir archivo de imagen. | Si el actor decide adjuntar fotografía, el sistema deberá abrir el explorador de archivos y cargar una previsualización del archivo cargado. |
+| 3 | Selecciona "Registrar". | Registro de Agente en sistema y confirma éxito. |
 
 #### Excepciones
 
@@ -205,11 +206,13 @@
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
 | 1 | Buscar agente entre listado de Agentes Inmobiliario registrados (CU-02.01.03). | Redirigir a listado de Agentes Inmobiliarios registrados. |
-| 2 | Ingresa Nombre completo y/o Contraseña. | Valida formato de campos. |
-| 3 | Selecciona "Guardar cambios". | Sistema muestra mensaje de confirmación. |
-| 4 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar" cambios. | Sistema espera confirmación. |
-| 4.1 | Administrador selecciona aceptar los cambios. | Datos del agente son actualizados en el sistema, muestra mensaje de éxito. |
-| 4.2 | Administrador selecciona rechazar los cambios. | Cambios son descartados. |
+| 2 | Selecciona opción "Editar" en el agente deseado. | Muestra formulario con datos actuales del agente. |
+| 3 | Ingresa Nombre completo y/o Contraseña. | Valida formato de campos. |
+| 3.1 | Si el administrador decide adjuntar fotografía deberá seleccionar "Subir Fotografía" y elegir archivo de imagen. | Si el actor decide adjuntar fotografía, el sistema deberá abrir el explorador de archivos y cargar una previsualización del archivo cargado. |
+| 4 | Selecciona "Continuar". | Sistema muestra mensaje de confirmación. |
+| 5 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar" cambios. | Sistema espera confirmación. |
+| 4.1 | Administrador selecciona "Aceptar" los cambios. | Datos del agente son actualizados en el sistema, muestra mensaje de éxito. |
+| 4.2 | Administrador selecciona "Rechazar" los cambios. | Cambios son descartados. |
 
 #### Excepciones
 
@@ -237,7 +240,7 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Ver Agentes". | Redirige a listado de agentes. |
+| 1 | Inicia sesión como agente (CU-03.01.02) | Redirige a dashboard de agentes. |
 | 2 | Visualiza resultados. | Sistema muestra listado de agentes con múltiples acciones. |
 
 #### Excepciones
@@ -266,10 +269,11 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Eliminar". | Sistema muestra mensaje de confirmación. |
-| 2 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar". | Sistema espera confirmación. |
-| 2.1 | Administrador selecciona aceptar. | Datos del agente son eliminados del sistema, muestra mensaje de éxito. |
-| 2.2 | Administrador selecciona rechazar. | Eliminación descartada. |
+| 1 | Buscar agente entre listado de Agentes Inmobiliario registrados (CU-02.01.03). | Redirigir a listado de Agentes Inmobiliarios registrados. |
+| 2 | Seleccionar opción "Eliminar". | Sistema muestra mensaje de confirmación. |
+| 3 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar". | Sistema espera confirmación. |
+| 3.1 | Administrador selecciona "Aceptar y Eliminar". | Datos del agente son eliminados del sistema, muestra mensaje de éxito. |
+| 3.2 | Administrador selecciona "Rechazar". | Eliminación descartada. |
 
 #### Excepciones
 
