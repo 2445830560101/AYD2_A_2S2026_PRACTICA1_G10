@@ -7,6 +7,8 @@ from app.api.cita import router as cita_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
+from app.api.foto import router as foto_router
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -23,12 +25,16 @@ app.add_middleware(
     allow_headers=["*"],        # Permitir todos los headers (Authorization, Content-Type...)
 )
 
+# Hacer pública la carpeta imagenes
+app.mount("/imagenes", StaticFiles(directory="imagenes"), name="imagenes")
+
 # Routers
 app.include_router(usuarios_router)
 app.include_router(auth_router)
 app.include_router(propiedad_router)
 app.include_router(agentes_router)
 app.include_router(cita_router)
+app.include_router(foto_router)
 
 # Montar la carpeta de fotos como estática
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

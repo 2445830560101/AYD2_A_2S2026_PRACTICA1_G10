@@ -7,6 +7,10 @@ from app.core.security import verify_token
 from app.models.usuario import Usuario
 from typing import List
 from fastapi import Response, status
+from app.services.propiedad_service import buscar_propiedades
+from app.schemas.propiedad_schema import PropiedadResponse
+from typing import Optional
+
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -131,3 +135,20 @@ def eliminar_usuario(
     db.delete(usuario)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {
+        "message": "Perfil actualizado correctamente"
+    }
+
+
+@router.get("/buscar", response_model=list[PropiedadResponse])
+def buscar_propiedad(
+    propiedad_id: Optional[int] = None,
+    titulo: Optional[str] = None,
+    direccion: Optional[str] = None,
+    usuario: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Buscar propiedades por ID, título o dirección.
+    """
+    return buscar_propiedades(db, propiedad_id, titulo, direccion)
