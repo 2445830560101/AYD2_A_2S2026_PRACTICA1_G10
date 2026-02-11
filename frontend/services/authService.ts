@@ -38,6 +38,10 @@ export async function register_client(
     formData.append("foto", foto)
   }
 
+  if (!nombre_completo || !correo || !password) {
+    throw new Error("Todos los campos son obligatorios")
+  }
+
   const res = await fetch(`${API_URL}/clients`, {
     method: "POST",
     body: formData,
