@@ -14,7 +14,7 @@ export default function DashboardPage() {
       return;
     }
 
-    router.push(`/dashboard/${user.role}`);
+    router.push(`/dashboard/${user.rol}`);
   }, [user]);
 
   return null;

@@ -106,13 +106,13 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Editar mis datos". | Redirigir a formulario con datos actuales con opción de edición. |
-| 2 | Ingresa Nombre completo y/o Contraseña. | Valida formato de campos. |
+| 1 | Entra a "Mis Perfil" en barra lateral. | Redirigir a pagina con formulario para actualizar datos. |
+| 2 | Ingresa "Nombre completo" y/o "Nueva Contraseña". | Valida formato de campos. |
 | 2.1 | Si el cliente decide adjuntar fotografía deberá seleccionar "Subir Fotografía" y elegir archivo de imagen. | Si el actor decide adjuntar fotografía, el sistema deberá abrir el explorador de archivos y cargar una previsualización del archivo cargado. |
 | 3 | Selecciona "Guardar cambios". | Sistema muestra mensaje de confirmación. |
 | 4 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar" cambios. | Sistema espera confirmación. |
-| 4.1 | Cliente selecciona aceptar los cambios. | Datos del cliente son actualizados en el sistema, muestra mensaje de éxito. |
-| 4.2 | Cliente selecciona rechazar los cambios. | Cambios son descartados. |
+| 4.1 | Cliente selecciona "Aceptar" los cambios. | Datos del cliente son actualizados en el sistema, muestra mensaje de éxito. |
+| 4.2 | Cliente selecciona "Rechazar" los cambios. | Cambios son descartados. |
 
 #### Excepciones
 
@@ -140,16 +140,18 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Eliminar mi cuenta". | Sistema muestra mensaje de confirmación. |
+| 1 | Entra a "Mis Perfil" en barra lateral. |  Redirigir a pagina con formulario para actualizar datos. |
+| 1 | Seleccionar opción "Eliminar Cuenta". | Sistema muestra mensaje de confirmación. |
 | 2 | Visualiza mensaje de confirmación con la opción de "Aceptar" o "Rechazar". | Sistema espera confirmación. |
-| 2.1 | Cliente selecciona aceptar. | Datos del cliente son eliminados del sistema, muestra mensaje de éxito. |
-| 2.2 | Cliente selecciona rechazar. | Eliminación descartada. |
+| 2.1 | Cliente selecciona "Aceptar y Eliminar". | Datos del cliente son eliminados del sistema, muestra mensaje de éxito. |
+| 2.2 | Cliente selecciona "Rechazar". | Eliminación descartada. |
+| 3 | Es redirigido a la página de inicio. | - |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| - | - | - |
+| 1 | Usuario no se encontró en el sistema. | Mensaje de error "No se pudo eliminar la cuenta.". |
 
 ---
 
@@ -295,7 +297,7 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Seleccionar opción "Salir". | Sistema cierra sesión actual. |
+| 1 | Seleccionar opción "Cerrar sesión" en la barra lateral. | Sistema cierra sesión actual. |
 
 #### Excepciones
 
@@ -353,9 +355,11 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Ingresa criterio (ID, Título o Zona). | Filtra la base de datos. |
-| 2 | Selecciona opción "Buscar". | Presenta lista de coincidencias. |
-| 3 | Visualiza resultados. | - |
+| 1 | Entra a "Buscar Propiedades" en barra lateral. | Redirige a página de búsqueda. |
+| 2 | Ingresa criterio (ID, Título o Zona). | Filtra la base de datos. |
+| 3 | Selecciona opción "Buscar". | Presenta lista de coincidencias. |
+| 4 | Visualiza resultados. | - |
+| 4.1 | Presiona botón "Ver detalles completos". | Muestra todos los detalle de la propiedad. |
 
 #### Excepciones
 
@@ -395,6 +399,36 @@
 
 ---
 
+### CU-04.01.03 - Ver Favoritos
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Descripción** | Cliente desea ver listado de propiedades marcadas como favoritas. |
+| **Actores** | Cliente. |
+| **Pre-condiciones** | 1. Al menos una propiedad marcada como favorita. <br> 2. Cliente ha iniciado sesión. |
+| **Post-condiciones** | Permite ver detalles o eliminar propiedad de favoritos. |
+| **Rendimiento** | El sistema debe responder en un máximo de 5 segundos. |
+| **Frecuencia** | Media de 3 veces a la semana por cliente. |
+| **Importancia** | Importante. |
+| **Urgencia** | Inmediatamente. |
+| **Comentarios** | - |
+
+#### Secuencia Normal
+
+| # | Acción (Actor) | Reacción (Sistema) |
+| :--- | :--- | :--- |
+| 1 | Selecciona "Favoritos". | Muestra lista de propiedades favoritas. |
+| 2 | Visualiza resultados. | - |
+| 2.1 | Selecciona opción de eliminar de favoritos. | Elimina propiedad de la lista de favoritos. | 
+
+#### Excepciones
+
+| # | Situación (Causa) | Reacción (Sistema) |
+| :--- | :--- | :--- |
+| 1 | No hay propiedades marcadas como favoritas. | Mensaje de error "No hay propiedades favoritas". |
+
+---
+
 ### CU-04.02.01 - Registrar Tipo de Inmueble
 
 | Campo | Detalle |
@@ -421,7 +455,7 @@
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | No ingresa campos obligatorios. | Mensaje de error "Falta campos obligatorios". |
+| 1 | No ingresa campos obligatorios. | Mensaje de error "Completa este campo". |
 
 ---
 
@@ -451,7 +485,7 @@
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Un campo obligatorio se deja en vacío. | Mensaje de error "Falta campos obligatorios". |
+| 1 | Un campo obligatorio se deja en vacío. | Mensaje de error "Completa este campo". |
 
 ---
 
@@ -544,7 +578,7 @@
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | No ingresa campos obligatorios. | Mensaje de error "Falta campos obligatorios". |
+| 1 | No ingresa campos obligatorios. | Mensaje de error "Completa este campo". |
 
 ---
 
@@ -573,7 +607,7 @@
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | No se selecciona tipo de la lista. | Mensaje de error "Falta campos obligatorios". |
+| 1 | No se selecciona tipo de la lista. | Mensaje de error "Completa este campo". |
 
 ---
 
@@ -635,7 +669,7 @@
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Un campo obligatorio se deja en vacío. | Mensaje de error "Falta campos obligatorios". |
+| 1 | Un campo obligatorio se deja en vacío. | Mensaje de error "Completa este campo". |
 
 ---
 
@@ -687,9 +721,12 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Entra a sección de "Citas". | Redirige a página de citas. |
-| 2 | En parte superior consulta sección de "Mis citas". | Muestra datos de las citas solicitadas. |
-| 2.1 | Si Agente ha contestado con una propuesta (Estado "Propuesta recibida"). | Muestra notificación o estado. |
+| 1 | Entra a "Mis Citas" en barra lateral. | Redirige a página de citas y muestra datos de las citas del cliente. |
+| 1.1 | Si Agente ha contestado con una propuesta de cita. | Muestra estado de cita "propuesta recibida". |
+| 1.2 | Si Agente ha rechazado la solicitud de cita. | Muestra estado de cita "rechazada". |
+| 1.3 | Si Agente ha agendado la cita. | Muestra estado de cita "confirmada". |
+| 1.4 | Si Agente no ha respondido a la solicitud de cita. | Muestra estado de cita "pendiente". |
+| 1.5 | Si cliente ha rechazado la propuesta de cita. | Muestra estado de cita "cancelada". |
 
 #### Excepciones
 
@@ -717,16 +754,18 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Entra a sección "Citas". | Redirige a página de citas. |
-| 2 | Selecciona una propuesta de cita. | Muestra datos de la propuesta. |
-| 2.1 | Cliente acepta la propuesta. | Cita pasa a estado de agendada. |
-| 2.2 | Cliente rechaza la propuesta. | Cita pasa a estado de rechazada. |
+| 1 | Entra a "Mis Citas" en barra lateral. | Redirige a página de citas. |
+| 2 | Visualiza propuesta de cita. | Muestra detalles de la propuesta (Propiedad, Fecha Solicitada y Fecha Propuesta). |
+| 2.1 | Cliente presióna botón "Aceptar" en la sección "Acciones" de la cita. | Cita pasa a estado de agendada. |
+| 2.2 | Cliente presióna botón "Rechazar" en la sección "Acciones" de la cita. | Cita pasa a estado de rechazada. |
+| 2.2.1 | Ingresa motivo de rechazo y presióna "Confirmar Rechazo". | Registra motivo y confirma rechazo. |
+| 2.2.2 | Cancela acción de rechazo. | Vuelve a estado de propuesta recibida. |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | No selecciona ninguna cita. | Sistema indica que debe seleccionar una cita. |
+| 1 | No hay propuesta de cita. | No se muestran opciones de aceptar o rechazar. |
 
 ---
 
@@ -738,7 +777,7 @@
 | **Actores** | Cliente. |
 | **Pre-condiciones** | 1. Cliente ha iniciado sesión. <br> 2. La propiedad debe estar disponible. |
 | **Post-condiciones** | Visualizar solicitudes citas (CU-05.01.01). |
-| **Rendimiento** | El sistema debe responder en un máximo de 2 segundos. |
+| **Rendimiento** | El sistema debe responder en un máximo de 3 segundos. |
 | **Frecuencia** | Media de 50 veces a la semana. |
 | **Importancia** | Vital. |
 | **Urgencia** | Inmediatamente. |
@@ -748,16 +787,18 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Entra a sección de "Citas" y selecciona "Agendar cita". | Muestra formulario para ingresar fecha y hora. |
-| 2 | Selecciona fecha y hora. | Muestra mensaje de confirmación. |
-| 2.1 | Cliente selecciona aceptar. | Registra cita e indica actualizar solicitudes. |
-| 2.2 | Cliente selecciona rechazar. | Se cancela solicitud de cita. |
+| 1 | Ejecutar CU-04.01.01 (Visualizar propiedades). | Ver listado de propiedades del sistema. |
+| 2 | Pulsar en opción "Agendar cita". | Muestra formulario para ingresar fecha y hora. |
+| 2 | Ingresa "Fecha deseada" y "Hora deseada". | Verifica datos.. |
+| 2.1 | Cliente selecciona "Confirmar Solicitud". | Registra cita y muestra mensaje de éxito. |
+| 2.2 | Cliente selecciona "Cancelar". | Se cancela solicitud de cita. |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
 | 1 | Propiedad seleccionada ya tiene cita en esa hora. | Mostrar mensaje "Cita no disponible". |
+| 2 | No ingresa campos obligatorios. | Mensaje de error "Completa este campo". |
 
 ---
 

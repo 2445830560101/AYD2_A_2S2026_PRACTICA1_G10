@@ -17,8 +17,10 @@ export default function RoleSidebar({ role }: { role: Role }) {
       { label: 'Mis Propiedades', path: '/dashboard/agente/propiedades', icon: 'bi-house-door' }
     ],
     cliente: [
-      { label: 'Dashboard+', path: '/dashboard/cliente', icon: 'bi-speedometer2' },
-      { label: 'Buscar Propiedades', path: '/dashboard/cliente/buscar', icon: 'bi-search' }
+      { label: 'Buscar Propiedades', path: '/dashboard/cliente', icon: 'bi-search' },
+      { label: 'Favoritos', path: '/dashboard/cliente/favoritos', icon: 'bi-heart' },
+      { label: 'Mis Citas', path: '/dashboard/cliente/citas', icon: 'bi-calendar-check' },
+      { label: 'Mi Perfil', path: '/dashboard/cliente/perfil', icon: 'bi-person' }
     ],
     admin: []
   };
