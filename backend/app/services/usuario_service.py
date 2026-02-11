@@ -12,7 +12,7 @@ UPLOAD_DIR = "imagenes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# 🔹 REGISTRAR USUARIO
+# REGISTRAR USUARIO
 def registrar_usuario(
     db: Session,
     usuario: UsuarioCreate,
@@ -33,10 +33,12 @@ def registrar_usuario(
     if foto:
         extension = os.path.splitext(foto.filename)[1]
         nombre_unico = f"{uuid.uuid4()}{extension}"
-        ruta_foto = os.path.join(UPLOAD_DIR, nombre_unico)
+        ruta_fisica = os.path.join(UPLOAD_DIR, nombre_unico)
 
-        with open(ruta_foto, "wb") as buffer:
+        with open(ruta_fisica, "wb") as buffer:
             shutil.copyfileobj(foto.file, buffer)
+
+        ruta_foto = f"imagenes/{nombre_unico}"
 
     # Crear usuario
     nuevo = Usuario(
@@ -53,7 +55,7 @@ def registrar_usuario(
     return nuevo
 
 
-# 🔹 EDITAR USUARIO
+# EDITAR USUARIO
 def editar_usuario(
     db: Session,
     usuario_id: int,
