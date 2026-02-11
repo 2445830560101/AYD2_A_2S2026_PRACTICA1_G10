@@ -1,3 +1,4 @@
+import { API_URL, getHeaders, getFormHeaders } from './apiConfig'
 import { Client, createClient } from "@/types/User"
 import { Appointment, ViewingStatus } from "@/types/Appointment"
 import { Property } from "@/types/Property"
@@ -26,7 +27,7 @@ export async function get_clients(): Promise<Client[]> {
 
 // Favoritos
 export async function get_favorites(user_id: number): Promise<Property[]> {
-  // TODO: Implementar carga de favoritos desde backend
+    // TODO: Implementar carga de favoritos desde backend
 
     const mockup_data: Property[] = [
         {
@@ -48,18 +49,18 @@ export async function get_favorites(user_id: number): Promise<Property[]> {
 }
 
 export async function add_favorite(user_id: number, property_id: number): Promise<void> {
-  // TODO: Implementar adición de favorito
+    // TODO: Implementar adición de favorito
 }
 
 export async function remove_favorite(user_id: number, property_id: number): Promise<void> {
-  // TODO: Implementar eliminación de favorito
+    // TODO: Implementar eliminación de favorito
 }
 
 
 // Citas
 
 export async function get_appointments(cliente_id: number): Promise<Appointment[]> {
-  // TODO: Implementar carga de citas
+    // TODO: Implementar carga de citas
 
     const mockup_data: Appointment[] = [
         {
@@ -114,11 +115,11 @@ export async function get_appointments(cliente_id: number): Promise<Appointment[
         }
     ];
 
-  return mockup_data;
+    return mockup_data;
 }
 
 export async function add_appointment(cliente_id: number, agente_id: number, propiedad_id: number, fecha_propuesta: string): Promise<void> {
-  // TODO: Implementar creación de cita
+    // TODO: Implementar creación de cita
 }
 
 export async function accept_appointment(appointment_id: number): Promise<void> {
@@ -146,23 +147,41 @@ export async function get_client_profile(cliente_id: number): Promise<Client> {
 }
 
 export async function update_client(cliente_id: number, nombre_completo: string, password: string, foto: string): Promise<void> {
-    // TODO: Implementar actualización de perfil de cliente
+
+    const formData = new FormData();
+    formData.append("nombre_completo", nombre_completo)
+    formData.append("usuario_id", cliente_id.toString())
+    formData.append("password", password)
+
+    if (foto) {
+        formData.append("foto", foto)
+    }
+
+    if (!nombre_completo && !password && !foto) {
+        throw new Error("Al menos un campo debe ser actualizado")
+    }
+
+    const res = await fetch(`${API_URL}/usuarios/me`, {
+        method: "POST",
+        headers: getFormHeaders(),
+        body: formData,
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Error al registrar cliente")
+    }
 }
 
 export async function delete_client(cliente_id: number): Promise<void> {
-    //TODO: Implementar eliminación de perfil de cliente
-}
 
+    const res = await fetch(`${API_URL}/usuarios/delete/${cliente_id}`, {
+        method: 'DELETE',
+        headers: getHeaders(),
+    });
 
-export async function create_client(data: any) {
-    //TODO: Implementar creación de cliente en backend
-    const form = new FormData()
-    form.append('nombre_completo', data.nombre_completo)
-    form.append('email', data.correo)
-    form.append('password', data.password)
-
-    if (data.foto) {
-        form.append('foto', data.foto)
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al eliminar el cliente");
     }
-
 }

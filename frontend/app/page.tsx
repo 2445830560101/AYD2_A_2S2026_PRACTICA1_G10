@@ -24,9 +24,18 @@ export default function LoginPage() {
     try {
       const user = await loginService(email, password)
       login(user) // Guarda usuario en contexto global
-      
+      console.log("Usuario autenticado:", user) // Debug
       // TODO: evaluar user.role para saber a donde redirigir (admin, agente, cliente)
-      router.push('/dashboard');
+      const role = user.rol.toLowerCase()
+      if (role === 'administrador') {
+        router.push('/dashboard/admin')
+      } else if (role === 'agente') {
+        router.push('/dashboard/agente')
+      } else if (role === 'cliente') {
+        router.push('/dashboard/cliente')
+      } else {
+        router.push('/dashboard')
+      }
     } catch (err: any) {
       // Manejo de errores según CU-03.01.02 (Excepciones 2.1 y 2.2)
       const message = err.message || 'Datos ingresados incorrectos'

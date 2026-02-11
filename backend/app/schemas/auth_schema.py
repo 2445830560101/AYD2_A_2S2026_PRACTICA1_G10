@@ -12,3 +12,5 @@ class LoginResponse(BaseModel):
     id: int
     correo: EmailStr
     rol: str
+    foto: str | None
+    nombre_completo: str

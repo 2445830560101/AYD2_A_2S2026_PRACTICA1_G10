@@ -5,10 +5,12 @@ import RoleSidebar from '@/components/RoleSidebar'
 import { Container, Card, Form, Button, Image, Modal, Alert, Row, Col } from 'react-bootstrap'
 import { useAuth } from '@/context/AuthContext'
 import { update_client, delete_client } from '@/services/clientService'
+import { getImageUrl } from '@/utils/imageUtils'
+import { useRouter } from 'next/navigation'
 
 export default function PerfilPage() {
     const { user, login, logout } = useAuth(); // 'login' aquí se usa para actualizar el contexto
-
+    const router = useRouter()
     // Estados del formulario
     const [formData, setFormData] = useState({
         nombre_completo: '',
@@ -27,20 +29,22 @@ export default function PerfilPage() {
     useEffect(() => {
         if (user) {
             setFormData({
-                nombre_completo: user.nombre_completo || '',
+                nombre_completo: user.nombre_completo || 'N/A',
                 password: '',
             })
-            setPreviewUrl(user.foto || null)
+            setPreviewUrl(user.foto ?? null)
         }
     }, [user])
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]
-            setPhoto(file)
-            setPreviewUrl(URL.createObjectURL(file))
+            const file = e.target.files[0];
+            setPhoto(file);
+            
+            const objectUrl = URL.createObjectURL(file);
+            setPreviewUrl(objectUrl); 
         }
-    }
+    };
 
     const handleUpdateClick = (e: React.FormEvent) => {
         e.preventDefault()
@@ -84,6 +88,8 @@ export default function PerfilPage() {
         try {
             await delete_client(user!.id);
             logout()
+            setMessage({ type: 'success', text: 'Cuenta eliminada correctamente.' })
+            router.push('/')
         } catch (error) {
             setShowDeleteModal(false)
             setMessage({ type: 'danger', text: 'No se pudo eliminar la cuenta.' })
@@ -94,86 +100,89 @@ export default function PerfilPage() {
     return (
         <div className="d-flex bg-light min-vh-100">
             <RoleSidebar role="cliente" />
-            <Container className="p-5 d-flex flex-column align-items-center">
-                <h2 className="text-primary fw-bold mb-4 w-100 text-center">Mi Perfil</h2>
+            <div className="flex-grow-1 p-4">
 
-                {message && <Alert variant={message.type} onClose={() => setMessage(null)} dismissible className="w-100">{message.text}</Alert>}
+                <Container className="p-5 d-flex flex-column align-items-center">
+                    <h2 className="text-primary fw-bold mb-4 w-100 text-center">Mi Perfil</h2>
 
-                <Card className="shadow-sm border-0 rounded-4 p-4" style={{ maxWidth: '700px', width: '100%' }}>
-                    <Card.Body>
-                        <Form onSubmit={handleUpdateClick}>
+                    {message && <Alert variant={message.type} onClose={() => setMessage(null)} dismissible className="w-100">{message.text}</Alert>}
 
-                            {/* Sección Foto */}
-                            <div className="text-center mb-4">
-                                <div className="position-relative d-inline-block">
-                                    <div
-                                        className="rounded-circle overflow-hidden border border-3 border-white shadow"
-                                        style={{ width: '150px', height: '150px', backgroundColor: '#e9ecef' }}
-                                    >
-                                        {previewUrl ? (
-                                            <Image src={previewUrl} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        ) : (
-                                            <div className="d-flex align-items-center justify-content-center h-100 text-muted display-4">
-                                                <i className="bi bi-person"></i>
-                                            </div>
-                                        )}
+                    <Card className="shadow-sm border-0 rounded-4 p-4" style={{ maxWidth: '700px', width: '100%' }}>
+                        <Card.Body>
+                            <Form onSubmit={handleUpdateClick}>
+
+                                {/* Sección Foto */}
+                                <div className="text-center mb-4">
+                                    <div className="position-relative d-inline-block">
+                                        <div
+                                            className="rounded-circle overflow-hidden border border-3 border-white shadow"
+                                            style={{ width: '150px', height: '150px', backgroundColor: '#e9ecef' }}
+                                        >
+                                            {previewUrl ? (
+                                                <Image src={getImageUrl(previewUrl)} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                <div className="d-flex align-items-center justify-content-center h-100 text-muted display-4">
+                                                    <i className="bi bi-person"></i>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <Form.Label
+                                            className="position-absolute bottom-0 end-0 btn btn-primary btn-sm rounded-circle shadow-sm"
+                                            style={{ width: '40px', height: '40px', lineHeight: '30px' }}
+                                        >
+                                            <i className="bi bi-camera-fill"></i>
+                                            <Form.Control type="file" accept="image/*" className="d-none" onChange={handleImageChange} />
+                                        </Form.Label>
                                     </div>
-                                    <Form.Label
-                                        className="position-absolute bottom-0 end-0 btn btn-primary btn-sm rounded-circle shadow-sm"
-                                        style={{ width: '40px', height: '40px', lineHeight: '30px' }}
-                                    >
-                                        <i className="bi bi-camera-fill"></i>
-                                        <Form.Control type="file" accept="image/*" className="d-none" onChange={handleImageChange} />
-                                    </Form.Label>
                                 </div>
-                            </div>
 
-                            <Row>
-                                <Col md={6}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Nombre Completo</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            value={formData.nombre_completo}
-                                            onChange={(e) => setFormData({ ...formData, nombre_completo: e.target.value })}
-                                            required
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={6}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Correo Electrónico</Form.Label>
-                                        <Form.Control type="email" value={user?.correo} disabled className="bg-light" />
-                                        <Form.Text className="text-muted">El correo no se puede modificar.</Form.Text>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
+                                <Row>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Nombre Completo</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                value={formData.nombre_completo}
+                                                onChange={(e) => setFormData({ ...formData, nombre_completo: e.target.value })}
+                                                required
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Correo Electrónico</Form.Label>
+                                            <Form.Control type="email" value={user?.correo} disabled className="bg-light" />
+                                            <Form.Text className="text-muted">El correo no se puede modificar.</Form.Text>
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
 
-                            <Form.Group className="mb-4">
-                                <Form.Label>Nueva Contraseña (Opcional)</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Dejar en blanco para mantener la actual"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                />
-                            </Form.Group>
+                                <Form.Group className="mb-4">
+                                    <Form.Label>Nueva Contraseña (Opcional)</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Dejar en blanco para mantener la actual"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    />
+                                </Form.Group>
 
-                            <div className="d-flex justify-content-between align-items-center mt-4 border-top pt-4">
-                                {/* Botón Eliminar (CU-01.01.03) */}
-                                <Button variant="outline-danger" onClick={handleDeleteClick}>
-                                    Eliminar Cuenta
-                                </Button>
+                                <div className="d-flex justify-content-between align-items-center mt-4 border-top pt-4">
+                                    {/* Botón Eliminar (CU-01.01.03) */}
+                                    <Button variant="outline-danger" onClick={handleDeleteClick}>
+                                        Eliminar Cuenta
+                                    </Button>
 
-                                {/* Botón Guardar (Inicia CU-01.01.02) */}
-                                <Button variant="primary" type="submit" disabled={loading} className="px-4">
-                                    Guardar Cambios
-                                </Button>
-                            </div>
-                        </Form>
-                    </Card.Body>
-                </Card>
-            </Container>
+                                    {/* Botón Guardar (Inicia CU-01.01.02) */}
+                                    <Button variant="primary" type="submit" disabled={loading} className="px-4">
+                                        Guardar Cambios
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Card.Body>
+                    </Card>
+                </Container>
+            </div>
 
             {/* --- MODAL CONFIRMACIÓN ACTUALIZAR (CU-01.01.02 Paso 4) --- */}
             <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)} centered>
