@@ -5,10 +5,12 @@ import RoleSidebar from '@/components/RoleSidebar'
 import { Container, Card, Form, Button, Image, Modal, Alert, Row, Col } from 'react-bootstrap'
 import { useAuth } from '@/context/AuthContext'
 import { update_client, delete_client } from '@/services/clientService'
+import { getImageUrl } from '@/utils/imageUtils'
+import { useRouter } from 'next/navigation'
 
 export default function PerfilPage() {
     const { user, login, logout } = useAuth(); // 'login' aquí se usa para actualizar el contexto
-
+    const router = useRouter()
     // Estados del formulario
     const [formData, setFormData] = useState({
         nombre_completo: '',
@@ -27,20 +29,22 @@ export default function PerfilPage() {
     useEffect(() => {
         if (user) {
             setFormData({
-                nombre_completo: user.nombre_completo || '',
+                nombre_completo: user.nombre_completo || 'N/A',
                 password: '',
             })
-            setPreviewUrl(user.foto || null)
+            setPreviewUrl(user.foto ?? null)
         }
     }, [user])
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]
-            setPhoto(file)
-            setPreviewUrl(URL.createObjectURL(file))
+            const file = e.target.files[0];
+            setPhoto(file);
+            
+            const objectUrl = URL.createObjectURL(file);
+            setPreviewUrl(objectUrl); 
         }
-    }
+    };
 
     const handleUpdateClick = (e: React.FormEvent) => {
         e.preventDefault()
@@ -84,6 +88,8 @@ export default function PerfilPage() {
         try {
             await delete_client(user!.id);
             logout()
+            setMessage({ type: 'success', text: 'Cuenta eliminada correctamente.' })
+            router.push('/')
         } catch (error) {
             setShowDeleteModal(false)
             setMessage({ type: 'danger', text: 'No se pudo eliminar la cuenta.' })
@@ -113,7 +119,7 @@ export default function PerfilPage() {
                                             style={{ width: '150px', height: '150px', backgroundColor: '#e9ecef' }}
                                         >
                                             {previewUrl ? (
-                                                <Image src={previewUrl} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <Image src={getImageUrl(previewUrl)} alt="Perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             ) : (
                                                 <div className="d-flex align-items-center justify-content-center h-100 text-muted display-4">
                                                     <i className="bi bi-person"></i>

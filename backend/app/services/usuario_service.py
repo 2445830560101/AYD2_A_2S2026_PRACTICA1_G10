@@ -29,14 +29,15 @@ def registrar_usuario(
         raise ValueError(f"No existe el rol {rol_nombre}")
 
     # Guardar foto (si existe)
-    ruta_foto = None
     if foto:
         extension = os.path.splitext(foto.filename)[1]
         nombre_unico = f"{uuid.uuid4()}{extension}"
-        ruta_foto = os.path.join(UPLOAD_DIR, nombre_unico)
 
-        with open(ruta_foto, "wb") as buffer:
+        ruta_fisica = os.path.join(UPLOAD_DIR, nombre_unico)
+        with open(ruta_fisica, "wb") as buffer:
             shutil.copyfileobj(foto.file, buffer)
+        
+        ruta_relativa_db = f"{UPLOAD_DIR}/{nombre_unico}"
 
     # Crear usuario
     nuevo = Usuario(
@@ -44,7 +45,7 @@ def registrar_usuario(
         correo=usuario.correo,
         password=hash_password(usuario.password),
         rol_id=rol_obj.id,
-        foto=ruta_foto
+        foto=ruta_relativa_db if foto else None
     )
 
     db.add(nuevo)
@@ -58,30 +59,33 @@ def editar_usuario(
     db: Session,
     usuario_id: int,
     datos: UsuarioUpdate,
-    foto: UploadFile = None
+    foto: UploadFile | None = None
 ):
     usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
         raise ValueError("Usuario no encontrado")
 
-    # Cambios parciales
-    if datos.nombre_completo:
+    if datos.nombre_completo and datos.nombre_completo.strip():
         usuario.nombre_completo = datos.nombre_completo
 
-    if datos.password:
+    if datos.password and datos.password.strip():
+        # Solo entramos aquí si el usuario escribió una contraseña nueva
         usuario.password = hash_password(datos.password)
 
-    # Guardar foto como en registrar_cliente
     if foto:
-        extension = os.path.splitext(foto.filename)[1]
-        nombre_unico = f"{uuid.uuid4()}{extension}"
-        ruta_foto = os.path.join(UPLOAD_DIR, nombre_unico)
+        try:
+            extension = os.path.splitext(foto.filename)[1]
+            nombre_unico = f"{uuid.uuid4()}{extension}"
 
-        with open(ruta_foto, "wb") as buffer:
-            shutil.copyfileobj(foto.file, buffer)
+            ruta_fisica = os.path.join(UPLOAD_DIR, nombre_unico)
+            with open(ruta_fisica, "wb") as buffer:
+                shutil.copyfileobj(foto.file, buffer)
 
-        usuario.foto = ruta_foto
+            usuario.foto = f"{UPLOAD_DIR}/{nombre_unico}"
+        except Exception as e:
+            print(f"Error al subir imagen: {e}")
 
     db.commit()
     db.refresh(usuario)
     return usuario
+
