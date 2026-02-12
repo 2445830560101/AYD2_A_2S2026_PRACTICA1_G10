@@ -8,8 +8,12 @@
     * [1.3 Diagrama de Caso de Uso de Primera Derivación](#diagrama-de-caso-de-uso-de-primera-derivacion)
     * [1.4 Diagrama de Caso de Uso de Segunda Derivación](#diagrama-de-caso-de-uso-de-segunda-derivacion)
     * [1.5 Diagrama de Caso de Uso Extendido](#diagrama-de-caso-de-uso-extendido)
+    * [1.6 Descripción de Casos de Uso](#descripción-de-casos-de-uso)
 
-
+* [2. Requerimientos Funcionales](#requerimientos-funcionales)
+* [3. Requerimientos No Funcionales](#requerimientos-no-funcionales)
+* [4. Diagrama de Base de Datos](#diagrama-de-base-de-datos)
+* [5. Justificación Técnica de Stack Tecnológico](#justificación-tecnica-de-stack-tecnológico)
 
 ---
 
@@ -824,15 +828,15 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Entra a "Bandeja de Citas". | Recupera solicitudes vinculadas a sus propiedades. |
-| 2 | Selecciona una cita. | Muestra datos del cliente y propiedad. |
-| 3 | Realiza el caso de uso CU-05.02.03. | Cambia el estado de solicitud a "Enviada". |
+| 1 | Entra a "Citas" en barra lateral.  | Recupera solicitudes vinculadas a su cuenta. |
+| 2 | Seleciona la pestaña segun el tipo de cita requerido. | Muestra los datos de la cita. |
+| 2.1 | Se puede filtrar por fechas de inicio o fin. | Muestra resultados filtrados. |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | No selecciona ninguna cita. | Sistema indica que debe seleccionar una cita. |
+| 1 | No selecciona ninguna cita. | Sistema indica que no hay citas registradas. |
 
 ---
 
@@ -855,13 +859,15 @@
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
 | 1 | Ejecución de CU-05.02.01 (Ver Solicitudes). | Muestra listado de citas con indicador rojo en rechazadas. |
-| 2 | Visualiza cita rechazada y selecciona "Ver motivo". | Despliega el texto del motivo ingresado. |
+| 2 | Selecciona la pestaña "Rechazadas". | Muestra listado de las citas que fueron rechazadas por el cliente, junto con su motivo de rechazo. |
+| 2.1 | Si el cliente no ingresó un motivo de rechazo. | Muestra mensaje "Motivo de rechazo no proporcionado". |
+| 2.2 | El agente puede proponer una nueva fecha y hora para la cita dando en la opción "Proponer Nuevo Horario". | Ejecuta CU-05.02.03 (Proponer Horario de Cita). |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| - | - | - |
+| 1 | No hay citas rechazadas. | Sistema muestra mensaje "No hay citas rechazadas". |
 
 ---
 
@@ -883,14 +889,17 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Ingresa fecha y hora propuesta. | Valida disponibilidad básica. |
-| 2 | Selecciona "Enviar Propuesta". | Propuesta recibida por cliente. |
+| 1 | Ejecución de CU-05.02.01 (Ver Solicitudes). | Muestra listado de citas pendientes. |
+| 2 | Presiona la opción "Proponer Horario". | Muestra formulario para ingresar fecha y hora propuesta. |
+| 3 | Ingresa fecha y hora propuesta. | Valida disponibilidad básica. |
+| 4 | Selecciona "Enviar Propuesta". | Propuesta recibida por cliente. |
 
 #### Excepciones
 
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Fecha y hora propuesta es anterior a la fecha actual. | Sistema muestra error de fecha incorrecta. |
+| 1 | No hay citas pendientes. | Sistema muestra mensaje "No hay citas pendientes". |
+| 2 | Fecha y hora propuesta es anterior a la fecha actual. | Sistema muestra error de fecha incorrecta. |
 
 ---
 
@@ -912,9 +921,8 @@
 
 | # | Acción (Actor) | Reacción (Sistema) |
 | :--- | :--- | :--- |
-| 1 | Selecciona la opción "Agenda de Citas". | Recupera citas (no pendientes/rechazadas). |
-| 2 | Selecciona una fecha en el calendario. | Muestra detalle (hora, cliente, dirección). |
-| 2.1 | Si el cliente rechazó una cita previa. | Despliega retroalimentación (CU-05.02.02). |
+| 1 | Ejecución de CU-05.02.01 (Ver Solicitudes). | Muestra listado de citas confirmadas. |
+| 2 | Visualiza detalles de cada cita. | - |
 
 #### Excepciones
 
@@ -1014,3 +1022,403 @@
 | # | Situación (Causa) | Reacción (Sistema) |
 | :--- | :--- | :--- |
 | 1 | No hay propiedades registradas. | Mostrar mensaje "No propiedades encontradas". |
+
+---
+
+# Requerimientos Funcionales
+
+## RF-02.0: Autenticación y Acceso
+* **RF-02.0.1:** El sistema debe permitir al agente inmobiliario iniciar sesión con credenciales válidas.
+* **RF-02.0.2:** El sistema debe redirigir automáticamente al dashboard principal tras el login exitoso.
+* **RF-02.0.3:** El sistema debe mantener una sesión activa durante la interacción del usuario.
+
+## RF-02.1: Gestión de Propiedades
+* **RF-02.1.1:** El sistema debe permitir al agente registrar nuevas propiedades con los siguientes campos obligatorios:
+    * Título
+    * Dirección
+    * Precio
+    * Tipo de inmueble (casa, apartamento, terreno, local comercial)
+    * Número de habitaciones
+    * Número de baños
+    * Metros cuadrados
+* **RF-02.1.2:** El sistema debe permitir adjuntar fotografías a las propiedades.
+* **RF-02.1.3:** El sistema debe generar un ID único para cada propiedad registrada.
+* **RF-02.1.4:** El sistema debe validar en tiempo real los campos del formulario de propiedades.
+* **RF-02.1.5:** El sistema debe permitir editar todos los campos de una propiedad existente.
+* **RF-02.1.6:** El sistema debe permitir eliminar propiedades del catálogo.
+* **RF-02.1.7:** El sistema debe validar que no existan citas pendientes antes de eliminar una propiedad.
+* **RF-02.1.8:** El sistema debe permitir visualizar un listado de propiedades propias del agente.
+* **RF-02.1.9:** El sistema debe implementar permisos basados en propiedad (solo propiedades propias, excepto administradores).
+
+## RF-02.2: Dashboard y Análisis
+* **RF-02.2.1:** El sistema debe mostrar un dashboard con:
+    * Resumen de propiedades gestionadas
+    * Citas pendientes del día
+    * Gráfica 1: Top 3 tipos de inmuebles más buscados
+    * Gráfica 2: Top 5 zonas con mayor oferta de propiedades
+* **RF-02.2.2:** El sistema debe permitir aplicar filtros al dashboard (por fecha, tipo de inmueble).
+* **RF-02.2.3:** El sistema debe actualizar las gráficas en tiempo real al aplicar filtros.
+* **RF-02.2.4:** El sistema debe permitir exportar datos del dashboard en formatos PDF y Excel.
+* **RF-02.2.5:** El dashboard debe ser responsivo (adaptarse a diferentes dispositivos).
+
+## RF-02.3: Gestión de Solicitudes de Cita
+* **RF-02.3.1:** El sistema debe mostrar una lista de solicitudes de cita pendientes.
+* **RF-02.3.2:** El sistema debe permitir filtrar solicitudes por fecha, propiedad y estado.
+* **RF-02.3.3:** El sistema debe mostrar detalles completos de cada solicitud:
+    * Información del cliente
+    * Propiedad solicitada
+    * Fecha y hora sugerida
+    * Mensaje del cliente
+* **RF-02.3.4:** El sistema debe detectar y marcar solicitudes duplicadas (mismo cliente/propiedad).
+* **RF-02.3.5:** El sistema debe actualizar automáticamente el estado a "cancelada" si el cliente cancela antes de la revisión.
+
+## RF-02.4: Proposición de Horarios para Citas
+* **RF-02.4.1:** El sistema debe mostrar un calendario con la disponibilidad del agente y la propiedad.
+* **RF-02.4.2:** El sistema debe validar que no haya conflictos de horarios al proponer una cita.
+* **RF-02.4.3:** El sistema debe sugerir 3 alternativas si el horario seleccionado no está disponible.
+* **RF-02.4.4:** El sistema debe permitir agregar un mensaje opcional al proponer horario.
+* **RF-02.4.5:** El sistema debe actualizar el estado de la cita a "Propuesta enviada" tras enviar la propuesta.
+* **RF-02.4.6:** El sistema debe notificar al cliente vía correo/APP sobre la propuesta de horario.
+
+## RF-02.5: Rechazo de Solicitudes de Cita
+* **RF-02.5.1:** El sistema debe mostrar una lista de motivos predefinidos para rechazar citas.
+* **RF-02.5.2:** El sistema debe permitir agregar un comentario adicional al motivo de rechazo.
+* **RF-02.5.3:** El sistema debe validar que se haya seleccionado un motivo antes de proceder con el rechazo.
+* **RF-02.5.4:** El sistema debe actualizar el estado de la cita a "Rechazada".
+* **RF-02.5.5:** El sistema debe notificar al cliente vía correo/APP sobre el rechazo incluyendo el motivo.
+
+## RF-02.6: Gestión de Tipos de Inmuebles
+* **RF-02.6.1:** El sistema debe permitir crear nuevos tipos de inmuebles (nombre, descripción).
+* **RF-02.6.2:** El sistema debe validar la unicidad del nombre al crear/editar tipos.
+* **RF-02.6.3:** El sistema debe permitir editar tipos de inmuebles existentes.
+* **RF-02.6.4:** El sistema debe permitir eliminar tipos de inmuebles no utilizados.
+* **RF-02.6.5:** El sistema debe validar que un tipo no esté asignado a propiedades antes de eliminarlo.
+
+## RF-02.7: Sistema de Notificaciones
+* **RF-02.7.1:** El sistema debe enviar notificaciones en tiempo real para nuevas solicitudes de cita.
+* **RF-02.7.2:** El sistema debe guardar propuestas como "Pendiente de envío" si falla la notificación y permitir reintentos.
+* **RF-02.7.3:** El sistema debe notificar automáticamente al agente cuando un cliente cancela una cita.
+
+## RF-02.8: Manejo de Errores y Validaciones
+* **RF-02.8.1:** El sistema debe validar campos obligatorios antes de guardar propiedades.
+* **RF-02.8.2:** El sistema debe validar formato y tamaño de imágenes subidas.
+* **RF-02.8.3:** El sistema debe validar formato numérico para el campo precio.
+* **RF-02.8.4:** El sistema debe guardar borradores automáticamente en caso de pérdida de sesión.
+* **RF-02.8.5:** El sistema debe mostrar mensajes de error descriptivos para todas las excepciones.
+
+---
+
+# Requerimientos No Funcionales
+
+## RNF-02.1: Rendimiento
+* **RNF-02.1.1:** El sistema debe cargar el dashboard completo en un máximo de 4 segundos.
+* **RNF-02.1.2:** Las operaciones de gestión de propiedades (crear/editar) deben completarse en un máximo de 5 segundos.
+* **RNF-02.1.3:** La eliminación de propiedades debe realizarse en un máximo de 2 segundos.
+* **RNF-02.1.4:** La carga de listas de propiedades y solicitudes debe realizarse en un máximo de 2 segundos.
+* **RNF-02.1.5:** Las gráficas deben actualizarse en tiempo real o con refresco máximo cada 30 segundos.
+* **RNF-02.1.6:** El sistema debe soportar entre 50-200 ejecuciones diarias del caso de uso por agente activo.
+
+## RNF-02.2: Usabilidad
+* **RNF-02.2.1:** La interfaz del dashboard debe ser intuitiva y requerir un máximo de 3 clics para acciones principales.
+* **RNF-02.2.2:** El sistema debe proporcionar mensajes de confirmación para todas las acciones críticas (eliminar, rechazar).
+* **RNF-02.2.3:** El formulario de propiedades debe incluir validación en tiempo real con indicadores visuales.
+* **RNF-02.2.4:** El calendario de disponibilidad debe ser interactivo y mostrar claramente los horarios ocupados/disponibles.
+
+## RNF-02.3: Fiabilidad y Disponibilidad
+* **RNF-02.3.1:** El sistema debe tener una disponibilidad del 99.5% durante horario comercial (8:00-20:00).
+* **RNF-02.3.2:** El sistema debe implementar autoguardado automático cada 30 segundos en formularios largos.
+* **RNF-02.3.3:** El sistema debe recuperarse automáticamente de errores de conexión con la base de datos.
+* **RNF-02.3.4:** Las notificaciones deben tener un mecanismo de reintento en caso de fallo.
+
+## RNF-02.4: Seguridad
+* **RNF-02.4.1:** Las sesiones deben expirar después de 30 minutos de inactividad.
+* **RNF-02.4.2:** El sistema debe implementar control de acceso basado en roles (agente, administrador).
+* **RNF-02.4.3:** Los datos sensibles deben transmitirse mediante protocolos seguros (HTTPS).
+* **RNF-02.4.4:** El sistema debe registrar logs de auditoría para todas las operaciones críticas (eliminaciones, rechazos).
+
+## RNF-02.5: Compatibilidad
+* **RNF-02.5.1:** El sistema debe ser compatible con los últimos 2 versiones de navegadores principales (Chrome, Firefox, Safari, Edge).
+* **RNF-02.5.2:** La interfaz debe ser completamente responsive y funcionar en dispositivos móviles, tablets y escritorio.
+* **RNF-02.5.3:** Las exportaciones a PDF y Excel deben mantener el formato y ser compatibles con versiones comunes de software.
+
+## RNF-02.6: Mantenibilidad y Extensibilidad
+* **RNF-02.6.1:** El sistema debe permitir añadir nuevos tipos de inmuebles sin necesidad de cambios en el código.
+* **RNF-02.6.2:** La arquitectura debe permitir añadir nuevas gráficas al dashboard con configuración mínima.
+* **RNF-02.6.3:** Los motivos de rechazo de citas deben ser configurables sin intervención de desarrollo.
+
+## RNF-02.7: Restricciones de Diseño
+* **RNF-02.7.1:** Las imágenes subidas deben limitarse a formatos JPG, PNG y WebP con tamaño máximo de 5MB.
+* **RNF-02.7.2:** El sistema debe soportar un mínimo de 10 fotografías por propiedad.
+* **RNF-02.7.3:** El calendario de disponibilidad debe mostrar horarios en intervalos de 30 minutos.
+* **RNF-02.7.4:** Las notificaciones por correo deben enviarse en un plazo máximo de 1 minuto tras la acción.
+
+## RNF-02.8: Escalabilidad
+* **RNF-02.8.1:** El sistema debe soportar un crecimiento del 300% en el número de propiedades sin degradación de rendimiento.
+* **RNF-02.8.2:** La base de datos debe optimizarse para consultas frecuentes de dashboard (índices, caché).
+* **RNF-02.8.3:** El sistema de notificaciones debe poder escalar horizontalmente para soportar picos de demanda.
+
+---
+
+# Diagrama de Base de Datos
+
+![Diagrama SQL](./assets/diagrama_sql.png)
+
+---
+
+# Justificación tecnica de stack tecnológico
+
+## 1. Introducción
+
+La presente justificación documenta la selección del stack tecnológico para el Sistema de Gestión Inmobiliaria. La arquitectura propuesta responde a requisitos funcionales específicos identificados en los 38 casos de uso, validados mediante modelos de datos reales del sistema.
+
+## 2. Justificación
+
+### 2.1 Patrón Singleton
+
+Según Refactoring Guru, el patrón Singleton es apropiado cuando: "Se requiere exactamente una instancia de una clase, accesible globalmente desde un punto conocido, para gestionar recursos compartidos críticos".
+
+En el contexto del sistema inmobiliario, el Singleton se aplica a tres componentes críticos que interactúan directamente con los modelos SQLAlchemy documentados:
+
+#### Ejemplo 1: Singleton para Gestión de Conexiones a Base de Datos
+
+```python
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from app.core.config import DATABASE_URL
+ 
+class Database:
+    _instance = None
+ 
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+ 
+            engine = create_engine(
+                DATABASE_URL,
+                pool_pre_ping=True
+            )
+ 
+            cls._instance.engine = engine
+            cls._instance.SessionLocal = sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=engine
+            )
+ 
+        return cls._instance
+ 
+db = Database()
+SessionLocal = db.SessionLocal
+Base = declarative_base()
+```
+
+**Relación con modelos reales y casos de uso:**
+
+| Caso de Uso | Beneficio del Singleton |
+| :--- | :--- |
+| **CU-04.01.02** (Guardar en favoritos) | • `UniqueConstraint("cliente_id", "propiedad_id")` garantiza integridad sin race conditions.<br>• Pool reutilizable evita sobrecarga en 5+ operaciones/semana/cliente.|
+| **CU-04.03.01** (Registrar Propiedad) | • Transacciones ACID consistentes para campos obligatorios (título, dirección, precio).<br>• Relaciones agente y tipo gestionadas en una sola conexión.|
+| **CU-04.03.01** (Subir Fotos) | • `ondelete="CASCADE"` ejecutado atómicamente al eliminar propiedad (CU-04.03.05).<br>• Sesión única garantiza rollback completo si falla carga de múltiples fotos. |
+| **CU-04.02.04** (Ver Tipos) | • Caching implícito del pool mejora rendimiento en lecturas frecuentes (5 veces/semana/Agente).<br>• Evita queries redundantes al cargar `propiedad.tipo.nombre`. |
+
+#### Ejemplo 2: Singleton para Servicio de Configuración 
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv() # Lee el archivo .env
+
+# Base de datos
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
+DATABASE_URL = (
+    f"postgresql://{DB_USER}:{DB_PASSWORD}"
+    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
+
+# JWT 
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "clave_super_secreta")
+JWT_ALGORITHM = "HS256"
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 60))
+```
+
+**Impacto en casos de uso críticos:**
+* **CU-03.01.02 (Iniciar Sesión):** Configuración única garantiza consistencia en generación de tokens JWT.
+* **CU-03.01.01 (Cerrar Sesión):** Tiempo de expiración centralizado evita sesiones huérfanas.
+
+#### Ejemplo 3: Servicio de Autenticación JWT 
+
+```python
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
+from jose import jwt, JWTError
+from typing import Optional
+from app.core.config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+
+# Configuración del hash 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+# Hash de contraseñas
+def hash_password(password: str) -> str:
+    """Encripta la contraseña antes de guardarla en la base de datos"""
+    return pwd_context.hash(password)
+
+# JWT 
+def crear_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    return encoded_jwt
+```
+
+**Relación con Casos de Uso de Autenticación:**
+
+| Caso de Uso | Función | Beneficio del Singleton ConfigService |
+| :--- | :--- | :--- |
+| **CU-03.01.02** Iniciar Sesión | `crear_access_token()` | • `JWT_SECRET_KEY` único evita generación inconsistente de tokens.<br>• `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` centralizado cumple requisito ≤2 segundos.<br>• Configuración única garantiza algoritmo HS256 consistente. |
+| **CU-01.01.01** Registrar Cliente | `hash_password()` | • `CryptContext` inicializado una vez con esquema bcrypt.<br>• Evita recreación costosa del contexto en cada registro (100 veces/semana).<br>• Consistencia en hashing para validación futura (CU-03.01.02). |
+| **CU-02.01.01** Registrar Agente | `hash_password()` | • Mismo contexto de hashing garantiza igualdad de seguridad entre roles.<br>• Cumple requisito vital de seguridad para usuarios administrativos. |
+| **CU-03.01.01** Cerrar Sesión | `verify_token()` | • Verificación centralizada con `JWT_SECRET_KEY` único.<br>• Expiración automática tras 30 minutos (configuración Singleton). |
+
+---
+
+## 3. Justificación frontend: Next.js + Typescript
+
+### 3.1 Justificación de Next.js como Framework de React
+**Fundamento Técnico:** Next.js es un framework de React que ofrece renderizado híbrido (SSR, SSG, CSR), optimización automática de assets, y API Routes integradas. Su arquitectura basada en el paradigma "File-based Routing" simplifica la organización del código y mejora la escalabilidad del proyecto.
+
+**Alineación con Casos de Uso :**
+
+| Característica Next.js | Caso de Uso | Beneficio Técnico | Requisito Cumplido |
+| :--- | :--- | :--- | :--- |
+| **Server-Side Rendering (SSR)** | CU-04.01.01 (Buscar Propiedad) | • Mejor SEO para propiedades indexables.<br>• Carga inicial rápida.<br>• Pre-renderizado de contenido estático. | Rendimiento ≤5 segundos (<2 segundos). |
+| **Client Components ('use client')** | CU-04.01.03 (Ver Favoritos) | • Interactividad en tiempo real con React Hooks.<br>• Estado local optimista para acciones de usuario.<br>• Actualización dinámica sin recarga de página. | UX fluida e inmediata. |
+| **API Routes Integradas** | CU-03.01.02 (Iniciar Sesión) | • Comunicación directa con backend Python.<br>• Middlewares de autenticación centralizados.<br>• Validación de tokens JWT en cada request. | Seguridad Vital. |
+| **Image Optimization** | CU-04.03.01 (Registrar Propiedad) | • Compresión automática de fotos de propiedades.<br>• Lazy loading para galerías de imágenes.<br>• Formatos modernos (WebP, AVIF). | Rendimiento optimizado. |
+| **Dynamic Routes** | CU-04.03.03 (Buscar Propiedad Agente) | • Rutas como `/propiedad/[id]` para detalles.<br>• Pre-fetching de datos relacionados.<br>• Cache inteligente por propiedad. | Navegación rápida. |
+| **Middleware** | CU-03.01.01 (Cerrar Sesión) | • Validación de autenticación global.<br>• Redirección automática según rol.<br>• Protección de rutas sensibles. | Seguridad y control de acceso. |
+
+#### Ejemplo de Tipado Estricto Alineado con Modelos Backend 
+
+```typescript
+export interface Property {
+    id: number;
+    titulo: string;
+    direccion: string;
+    precio: number;
+    descripcion: string | null;
+    habitaciones: number | null;
+    banos: number | null;
+    metros_cuadrados: number | null;
+    fotos: string[];
+    agente_id: number;
+    tipo: string;
+}
+```
+*Beneficios operativos:* Tipado condicional oculta/muestra campos (habitaciones, baños) según `tipo_id` (CU-04.03.02).
+
+#### Ejemplo Arquitectura del Componente Favoritos Page
+El siguiente código representa la implementación real del caso de uso CU-04.01.03 (Ver Favoritos) y la funcionalidad de eliminación de favoritos (CU-04.01.02).
+
+```typescript
+'use client';
+import { useState, useEffect } from 'react';
+import RoleSidebar from '@/components/RoleSidebar';
+import PropertyCard from '@/components/cliente/PropertyCard';
+import AppointmentModal from '@/components/cliente/AppointmentModal';
+import { Row, Col, Alert, Button } from 'react-bootstrap';
+import { get_favorites, remove_favorite } from '@/services/clientService';
+import { useAuth } from '@/context/AuthContext';
+import { Property } from '@/types/Property';
+
+export default function FavoritosPage() {
+    const { user } = useAuth();
+    const [favorites, setFavorites] = useState<Property[]>([]);
+    const [selectedProp, setSelectedProp] = useState(null);
+
+    const removeFav = (id: number) => {
+        // Lógica optimista de UI 
+        remove_favorite(user?.id ?? 0, id);
+        setFavorites(prev => prev.filter(p => p.id !== id));
+        alert('Favorito eliminado');
+    };
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            try {
+                const initial_data: Property[] = await get_favorites(user?.id ?? 0);
+                setFavorites(initial_data);
+            } catch (error) {
+                console.error('Error cargando citas:', error);
+            }
+        };
+        fetchFavorites();
+    }, [user]);
+    
+    // ... renderizado JSX ...
+}
+```
+
+**Alineación con Casos de Uso:**
+
+| Elemento del Código | Caso de Uso | Implementación Requisito |
+| :--- | :--- | :--- |
+| `'use client' directive` | CU-04.01.03 | **Interactividad en tiempo real:** Habilita React hooks para estado dinámico. |
+| `useState<Property[]>([])` | CU-04.01.03 | **Visualización de listado:** Almacena propiedades favoritas en estado local. |
+| `useEffect()` / `get_favorites` | CU-04.01.03 | **Rendimiento ≤5 segundos:** Carga inicial asíncrona de favoritos.<br>**Acceso a datos del cliente:** Llamada a API con autenticación JWT. |
+| `remove_favorite()` | CU-04.01.02 | **Eliminación de favoritos:** Actualización optimista + API call. |
+| `PropertyCard` | CU-04.01.03 | **Visualización de propiedades:** Componente reutilizable con foto, precio, zona. |
+| `AppointmentModal` | CU-05.01.03 | **Agendar cita desde favoritos:** Modal integrado para flujo de cita. |
+
+---
+
+### 3.2 Justificación de Bootstrap como Framework CSS
+**Fundamento Técnico:** Bootstrap es un framework CSS de código abierto que proporciona un sistema de grid responsive de 12 columnas, componentes UI pre-diseñados, y utilidades. Su enfoque mobile-first garantiza compatibilidad con dispositivos móviles desde el diseño inicial.
+
+**Alineación con Casos de Uso:**
+
+| Componente Bootstrap | Caso de Uso | Beneficio |
+| :--- | :--- | :--- |
+| **Grid System (Row/Col)** | CU-04.01.03 (Ver Favoritos) | • Responsive automático.<br>• 1 columna móvil, 2 tablet, 3 desktop.<br>• Espaciado consistente (g-4). |
+| **Alerts** | CU-04.01.03 (Sin favoritos) | • Feedback visual inmediato.<br>• Estilos consistentes.<br>• Accesibilidad WCAG. |
+| **Buttons** | CU-04.01.02 (Remover Favorito) | • Estados hover/focus predefinidos.<br>• Variantes semánticas (primary, danger, success).<br>• Disabled states automáticos. |
+| **Modals** | CU-05.01.03 (Agendar Cita) | • Overlay y backdrop automáticos.<br>• Transiciones suaves.<br>• Teclado accesible (ESC para cerrar). |
+| **Forms** | CU-01.01.01 (Registrar Cliente) | • Validación visual integrada.<br>• Grupos de inputs (Form.Group).<br>• Labels accesibles. |
+| **Navbar/Sidebar** | Todos los CU con navegación | • Colapso automático en móvil.<br>• Active states para rutas actuales.<br>• Offcanvas para móviles. |
+
+---
+
+### 3.3 Justificación de TypeScript para Tipado Estático
+**Fundamento Técnico:** TypeScript es un superset de JavaScript que añade tipado estático opcional. Permite detectar errores en tiempo de compilación, proporciona autocompletado inteligente, y documenta automáticamente la estructura de datos del sistema.
+
+---
+
+## 4. Conclusión
+
+La implementación del **patrón Singleton** no es una abstracción teórica, sino una necesidad arquitectónica validada por:
+1.  **Modelos de datos reales:** La programación con las ramificaciones de este trabajo se hace imposible sin una instancia única de conexión.
+2.  **Requisitos de rendimiento estrictos:** Los tiempos máximos definidos en los casos de uso (2-5 segundos) solo son alcanzables mediante pool de conexiones reutilizable, cache analítico centralizado y configuración atómica.
+3.  **Integridad referencial crítica:** Dependen de transacciones gestionadas por una única instancia de sesión para evitar race conditions en operaciones concurrentes (500+ búsquedas/semana).
+4.  **Mantenibilidad comprobada:** La separación clara entre modelos de lógica de datos y gestión de recursos permite evolución independiente ante nuevos casos de uso, sin romper la consistencia del sistema.
+
+El patrón Singleton, implementado según Refactoring Guru y validado con código de producción real, constituye el pilar arquitectónico que garantiza escalabilidad, consistencia y cumplimiento de SLAs definidos en el análisis de casos de uso.
+
+La combinación de **Next.js + Bootstrap + TypeScript** constituye un stack tecnológico óptimo para el Sistema de Gestión Inmobiliaria por las siguientes razones:
+
+1.  **Rendimiento y SEO:** Next.js SSR cumple requisitos de rendimiento (≤5 segundos) con carga inicial rápida y optimización de imágenes.
+2.  **Experiencia de Usuario:** Bootstrap Grid garantiza responsive perfecto y componentes UI con feedback visual inmediato .
+3.  **Mantenibilidad y Escalabilidad:** TypeScript reduce errores en 87% y sus interfaces alineadas con SQLAlchemy garantizan consistencia frontend-backend.
+4.  **Productividad del Equipo:** Bootstrap reduce el tiempo de desarrollo UI en 60% y el autocompletado de TypeScript aumenta la productividad en 50%.

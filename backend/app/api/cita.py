@@ -35,27 +35,27 @@ def rechazar_cita(cita_id: int, rechazo: CitaRechazo, db: Session = Depends(get_
 
 # AGENTE
 
-# Obtener solicitudes pendientes del agente
+# Obtener solicitudes pendientes del agente (RUTA ESPECÍFICA PRIMERO)
 @router.get("/solicitudes", response_model=List[CitaResponse])
 def obtener_solicitudes(db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user)):
     return cita_service.obtener_solicitudes(db, current_user)
 
-# Obtener detalle cita
-@router.get("/{cita_id}", response_model=CitaResponse)
-def detalle_cita(cita_id: int, db: Session = Depends(get_db)):
-    return cita_service.obtener_cita(db, cita_id)
+# Agenda del agente (RUTA ESPECÍFICA)
+@router.get("/agenda", response_model=List[CitaResponse])
+def agenda_agente(db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user)):
+    return cita_service.obtener_agenda(db, current_user.id)
+
+# Ver motivo de rechazo (RUTA ESPECÍFICA)
+@router.get("/{cita_id}/motivo_rechazo")
+def motivo_rechazo(cita_id: int, db: Session = Depends(get_db)):
+    return cita_service.ver_motivo(db, cita_id)
 
 # Proponer nueva fecha
 @router.put("/{cita_id}/proponer", response_model=CitaResponse)
 def proponer_fecha(cita_id: int, propuesta: CitaPropuesta, db: Session = Depends(get_db)):
     return cita_service.proponer_fecha(db, cita_id, propuesta)
 
-# Ver motivo de rechazo
-@router.get("/{cita_id}/motivo_rechazo")
-def motivo_rechazo(cita_id: int, db: Session = Depends(get_db)):
-    return cita_service.ver_motivo(db, cita_id)
-
-# Agenda
-@router.get("/agenda", response_model=List[CitaResponse])
-def agenda_agente(db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user)):
-    return cita_service.obtener_agenda(db, current_user.id)
+# Obtener detalle cita (RUTA GENÉRICA ÚLTIMA)
+@router.get("/{cita_id}", response_model=CitaResponse)
+def detalle_cita(cita_id: int, db: Session = Depends(get_db)):
+    return cita_service.obtener_cita(db, cita_id)
