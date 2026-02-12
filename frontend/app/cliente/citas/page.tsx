@@ -18,10 +18,8 @@ export default function MisCitasPage() {
 
     // Cargar citas
     const fetchAppointments = async () => {
-        // if (!user) return
         try {
-            // Usamos el ID real del usuario en lugar de '1'
-            const initial_data: Appointment[] = await get_appointments(user?.id ?? 0)
+            const initial_data: Appointment[] = await get_appointments()
             setCitas(initial_data)
         } catch (error) {
             console.error('Error cargando citas:', error)
@@ -99,7 +97,7 @@ export default function MisCitasPage() {
                                             <Badge bg={getBadge(cita.estado)}>{cita.estado.replace('_', ' ')}</Badge>
                                         </td>
                                         <td>
-                                            {cita.estado === ViewingStatus.PROPUESTA_RECIBIDA ? (
+                                            {cita.estado === ViewingStatus.ENVIADA ? (
                                                 <div className="d-flex gap-2">
                                                     <Button
                                                         size="sm"

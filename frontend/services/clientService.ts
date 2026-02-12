@@ -20,107 +20,111 @@ export async function get_clients(): Promise<Client[]> {
 }
 
 // Favoritos
-export async function get_favorites(user_id: number): Promise<Property[]> {
-    // TODO: Implementar carga de favoritos desde backend
+export async function get_favorites(): Promise<Property[]> {
+    const res = await fetch(`${API_URL}/clientes/favoritos`, {
+        method: 'GET',
+        headers: getHeaders(),
+    })
 
-    const mockup_data: Property[] = [
-        {
-            id: 1,
-            titulo: 'Casa Moderna Zona 10',
-            direccion: 'Zona 10',
-            precio: 250000,
-            descripcion: 'Hermosa casa moderna con acabados de lujo',
-            habitaciones: 3,
-            banos: 2,
-            metros_cuadrados: 250,
-            fotos: ['https://placehold.co/600x400'],
-            agente_id: 1,
-            tipo: 'Casa'
-        }
-    ]
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al conectar con el servidor");
+    }
 
-    return mockup_data
+    const data: Property[] = await res.json()
+    return data
 }
 
-export async function add_favorite(user_id: number, property_id: number): Promise<void> {
-    // TODO: Implementar adición de favorito
+export async function add_favorite(property_id: number): Promise<void> {
+    const res = await fetch(`${API_URL}/clientes/favoritos/${property_id}`, {
+        method: 'POST',
+        headers: getHeaders(),
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al conectar con el servidor");
+    }
 }
 
-export async function remove_favorite(user_id: number, property_id: number): Promise<void> {
-    // TODO: Implementar eliminación de favorito
+export async function remove_favorite(property_id: number): Promise<void> {
+    const res = await fetch(`${API_URL}/clientes/favoritos/${property_id}`, {
+        method: 'DELETE',
+        headers: getHeaders(),
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al conectar con el servidor");
+    }
 }
 
 
 // Citas
 
-export async function get_appointments(cliente_id: number): Promise<Appointment[]> {
-    // TODO: Implementar carga de citas
+export async function get_appointments(): Promise<Appointment[]> {
+    const res = await fetch(`${API_URL}/citas/mis-citas`, {
+        method: 'GET',
+        headers: getHeaders(),
+    })
 
-    const mockup_data: Appointment[] = [
-        {
-            id: 1,
-            cliente_id: cliente_id,
-            agente_id: 10,
-            propiedad_id: 101,
-            fecha_solicitada: '2026-03-10T10:00:00',
-            fecha_propuesta: null,
-            estado: ViewingStatus.PENDIENTE,
-            motivo_rechazo: null
-        },
-        {
-            id: 2,
-            cliente_id: cliente_id,
-            agente_id: 11,
-            propiedad_id: 102,
-            fecha_solicitada: '2026-03-12T14:00:00',
-            fecha_propuesta: '2026-03-12T16:00:00',
-            estado: ViewingStatus.PROPUESTA_RECIBIDA,
-            motivo_rechazo: null
-        },
-        {
-            id: 3,
-            cliente_id: cliente_id,
-            agente_id: 12,
-            propiedad_id: 103,
-            fecha_solicitada: '2026-03-05T09:00:00',
-            fecha_propuesta: null,
-            estado: ViewingStatus.CONFIRMADA,
-            motivo_rechazo: null
-        },
-        {
-            id: 4,
-            cliente_id: cliente_id,
-            agente_id: 13,
-            propiedad_id: 104,
-            fecha_solicitada: '2026-03-08T11:00:00',
-            fecha_propuesta: null,
-            estado: ViewingStatus.RECHAZADA,
-            motivo_rechazo: 'El agente no está disponible en esa fecha'
-        },
-        {
-            id: 5,
-            cliente_id: cliente_id,
-            agente_id: 14,
-            propiedad_id: 105,
-            fecha_solicitada: '2026-03-15T15:00:00',
-            fecha_propuesta: null,
-            estado: ViewingStatus.CANCELADA,
-            motivo_rechazo: null
-        }
-    ];
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al obtener citas");
+    }
 
-    return mockup_data;
+    const data: Appointment[] = await res.json()
+    return data
 }
 
-export async function add_appointment(cliente_id: number, agente_id: number, propiedad_id: number, fecha_propuesta: string): Promise<void> {
-    // TODO: Implementar creación de cita
+export async function add_appointment(propiedad_id: number, fecha_solicitada: string): Promise<Appointment> {
+    const res = await fetch(`${API_URL}/citas/`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            propiedad_id,
+            fecha_solicitada
+        })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al crear la cita");
+    }
+
+    const data: Appointment = await res.json()
+    return data
 }
 
-export async function accept_appointment(appointment_id: number): Promise<void> {
-    // TODO: Implementar aceptación de cita
+export async function accept_appointment(appointment_id: number): Promise<Appointment> {
+    const res = await fetch(`${API_URL}/citas/${appointment_id}/aceptar`, {
+        method: 'PUT',
+        headers: getHeaders(),
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al aceptar la cita");
+    }
+
+    const data: Appointment = await res.json()
+    return data
 }
 
-export async function reject_appointment(appointment_id: number, reasong: string): Promise<void> {
-    // TODO: Implementar rechazo de cita
-    // Cambio a estado "cancelada"
+export async function reject_appointment(appointment_id: number, reason: string): Promise<Appointment> {
+    const res = await fetch(`${API_URL}/citas/${appointment_id}/rechazar`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({
+            motivo_rechazo: reason
+        })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al rechazar la cita");
+    }
+
+    const data: Appointment = await res.json()
+    return data
 }

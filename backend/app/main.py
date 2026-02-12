@@ -4,11 +4,11 @@ from app.api.auth import router as auth_router
 from app.api.propiedad import router as propiedad_router
 from app.api.agentes import router as agentes_router
 from app.api.cita import router as cita_router
+from app.api.cliente import router as cliente_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 from app.api.foto import router as foto_router
-from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -34,6 +34,7 @@ app.include_router(auth_router)
 app.include_router(propiedad_router)
 app.include_router(agentes_router)
 app.include_router(cita_router)
+app.include_router(cliente_router)
 app.include_router(foto_router)
 
 # Montar la carpeta de fotos como estática

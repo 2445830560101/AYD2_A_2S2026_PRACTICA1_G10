@@ -11,6 +11,9 @@ class CitaCreate(BaseModel):
 class CitaPropuesta(BaseModel):
     fecha_propuesta: datetime
 
+class CitaRechazo(BaseModel):
+    motivo_rechazo: str
+
 class CitaResponse(BaseModel):
     id:int
     cliente_id: int

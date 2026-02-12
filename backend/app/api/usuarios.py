@@ -11,9 +11,7 @@ from app.services.propiedad_service import buscar_propiedades
 from app.schemas.propiedad_schema import PropiedadResponse
 from typing import Optional
 
-
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
-
 
 def get_db():
     db = SessionLocal()
@@ -70,38 +68,6 @@ def registro_usuario(
 def obtener_usuarios(db: Session = Depends(get_db)):
     """Obtiene la lista de todos los usuarios registrados"""
     usuarios = db.query(Usuario).all()
-    
-    return [
-        {
-            "id": usuario.id,
-            "nombre_completo": usuario.nombre_completo,
-            "correo": usuario.correo,
-            "rol": usuario.rol.nombre,
-            "foto": usuario.foto
-        }
-        for usuario in usuarios
-    ]
-
-@router.get("/clientes", response_model=List[UsuarioResponse])
-def obtener_clientes(db: Session = Depends(get_db)):
-    """Obtiene la lista de todos los clientes registrados"""
-    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Cliente")).all()
-    
-    return [
-        {
-            "id": usuario.id,
-            "nombre_completo": usuario.nombre_completo,
-            "correo": usuario.correo,
-            "rol": usuario.rol.nombre,
-            "foto": usuario.foto
-        }
-        for usuario in usuarios
-    ]
-
-@router.get("/agentes", response_model=List[UsuarioResponse])
-def obtener_agentes(db: Session = Depends(get_db)):
-    """Obtiene la lista de todos los agentes registrados"""
-    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Agente")).all()
     
     return [
         {
@@ -184,9 +150,6 @@ def eliminar_usuario(
     db.delete(usuario)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-    return {
-        "message": "Perfil actualizado correctamente"
-    }
 
 
 @router.get("/buscar", response_model=list[PropiedadResponse])
@@ -201,3 +164,4 @@ def buscar_propiedad(
     Buscar propiedades por ID, título o dirección.
     """
     return buscar_propiedades(db, propiedad_id, titulo, direccion)
+    

@@ -3,12 +3,18 @@
 import { useEffect, useState } from 'react';
 
 export default function ToastNotification({ 
-  show, 
-  onClose, 
-  message, 
+  show = false, 
+  onClose = () => {}, 
+  message = '', 
   type = 'success',
   duration = 3000 
-}) {
+}: {
+  show?: boolean;
+  onClose?: () => void;
+  message?: string;
+  type?: 'success' | 'error' | 'warning' | 'info';
+  duration?: number;
+} = {}) {
   const [isVisible, setIsVisible] = useState(show);
 
   useEffect(() => {
@@ -31,12 +37,14 @@ export default function ToastNotification({
     success: {
       bg: 'bg-success',
       border: 'border-success',
-      icon: 'bi-check-circle-fill'
+      icon: 'bi-check-circle-fill',
+      text: 'text-white'
     },
     error: {
       bg: 'bg-danger',
       border: 'border-danger',
-      icon: 'bi-exclamation-circle-fill'
+      icon: 'bi-exclamation-circle-fill',
+      text: 'text-white'
     },
     warning: {
       bg: 'bg-warning',
@@ -47,7 +55,8 @@ export default function ToastNotification({
     info: {
       bg: 'bg-info',
       border: 'border-info',
-      icon: 'bi-info-circle-fill'
+      icon: 'bi-info-circle-fill',
+      text: 'text-white'
     }
   };
 
