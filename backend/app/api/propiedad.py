@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -9,12 +10,14 @@ from typing import Optional
 
 router = APIRouter(prefix="/propiedades", tags=["Propiedades"])
 
+
 @router.get("/", response_model=list[PropiedadResponse])
 def listar_propiedades(
     db: Session = Depends(get_db)
 ):
     # Obtener todas las propiedades sin filtros
     return obtener_propiedades(db=db)
+
 
 @router.post("/registro_propiedad", response_model=PropiedadResponse, status_code=status.HTTP_201_CREATED)
 def registro_propiedad(
@@ -24,6 +27,7 @@ def registro_propiedad(
 ):
     nueva_propiedad = crear_propiedad(db, propiedad_data, usuario)
     return nueva_propiedad
+
 
 @router.get("/mis_propiedades", response_model=list[PropiedadResponse])
 def listar_mis_propiedades(
@@ -46,6 +50,7 @@ def actualizar_propiedad(
     usuario: Usuario = Depends(get_current_user)
 ):
     return editar_propiedad(db, propiedad_id, propiedad_data, usuario)
+
 
 @router.delete("/{propiedad_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_propiedad(

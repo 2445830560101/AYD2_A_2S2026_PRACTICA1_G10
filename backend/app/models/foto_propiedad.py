@@ -7,8 +7,15 @@ class FotoPropiedad(Base):
     __tablename__ = "fotos_propiedad"
 
     id = Column(Integer, primary_key=True, index=True)
-    propiedad_id = Column(Integer, ForeignKey(
-        "propiedades.id", ondelete="CASCADE"))
+    propiedad_id = Column(
+        Integer,
+        ForeignKey("propiedades.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
     url = Column(String(255), nullable=False)
 
-    propiedad = relationship("Propiedad", backref="fotos")
+    propiedad = relationship(
+        "Propiedad",
+        back_populates="fotos"
+    )

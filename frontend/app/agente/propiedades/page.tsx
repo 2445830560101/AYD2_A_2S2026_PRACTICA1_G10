@@ -5,6 +5,7 @@ import RoleSidebar from '@/components/RoleSidebar'
 import { Table, Badge, Button, Card, Modal, Form, Alert, Row, Col } from 'react-bootstrap'
 import { get_agent_properties, create_property, update_property, delete_property, get_property_types, create_property_type } from '@/services/propertyAgentService'
 import { Property } from "@/types/Property"
+import { upload_property_image } from '@/services/propertyAgentService'
 
 type PropertyFormData = {
     titulo: string;
@@ -21,6 +22,8 @@ export default function PropiedadesAgentePagel() {
     const [properties, setProperties] = useState<Property[]>([])
     const [propertyTypes, setPropertyTypes] = useState<{ id: number; nombre: string }[]>([])
     const [search, setSearch] = useState('')
+
+    const [images, setImages] = useState<File[]>([])
 
     // Estados para Modales
     const [showPropertyModal, setShowPropertyModal] = useState(false)
@@ -98,22 +101,38 @@ export default function PropiedadesAgentePagel() {
         }
 
         setLoading(true)
+
         try {
             if (editingProperty) {
                 await update_property(editingProperty.id, formData)
                 setMessage({ type: 'success', text: 'Propiedad actualizada correctamente' })
             } else {
-                await create_property(formData)
+                const nuevaPropiedad = await create_property(formData)
+
+                // Subir imágenes usando el service
+                if (images.length > 0) {
+                    for (const image of images) {
+                        await upload_property_image(nuevaPropiedad.id, image)
+                    }
+                }
+
                 setMessage({ type: 'success', text: 'Propiedad registrada correctamente' })
             }
+
             setShowPropertyModal(false)
+            setImages([]) // limpiar imágenes
             fetchData()
+
         } catch (error) {
-            setMessage({ type: 'danger', text: error instanceof Error ? error.message : 'Error al guardar propiedad' })
+            setMessage({
+                type: 'danger',
+                text: error instanceof Error ? error.message : 'Error al guardar propiedad'
+            })
         } finally {
             setLoading(false)
         }
     }
+
 
     const handleDeleteProperty = async (id: number) => {
         if (confirm('¿Estás seguro de que deseas eliminar esta propiedad?')) {
@@ -293,6 +312,21 @@ export default function PropiedadesAgentePagel() {
                                     placeholder="Describe las características principales..."
                                 />
                             </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Imágenes</Form.Label>
+                                <Form.Control
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        if (e.target.files) {
+                                            setImages(Array.from(e.target.files))
+                                        }
+                                    }}
+                                />
+                            </Form.Group>
+
 
                             <Row>
                                 <Col md={6}>
