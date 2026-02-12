@@ -26,7 +26,7 @@ export default function GestionAgentesPage() {
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    // --- CU-02.01.03: Ver Agentes ---
+
     const fetchAgents = async () => {
         try {
             const data = await get_agents();

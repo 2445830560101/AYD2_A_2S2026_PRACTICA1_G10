@@ -5,6 +5,7 @@ from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate, UsuarioResp
 from app.services.usuario_service import registrar_usuario, editar_usuario
 from app.core.security import verify_token
 from app.models.usuario import Usuario
+from typing import List
 
 router = APIRouter(prefix="/agentes", tags=["Agentes"])
 
@@ -27,6 +28,36 @@ def get_current_user(
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
 
+@router.get("/", response_model=List[UsuarioResponse])
+def obtener_agentes(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los agentes registrados"""
+    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Agente")).all()
+    
+    return [
+        {
+            "id": usuario.id,
+            "nombre_completo": usuario.nombre_completo,
+            "correo": usuario.correo,
+            "rol": usuario.rol.nombre,
+            "foto": usuario.foto
+        }
+        for usuario in usuarios
+    ]
+
+@router.get("/{agente_id}", response_model=UsuarioResponse)
+def obtener_agente_por_id(agente_id: int, db: Session = Depends(get_db)):
+    """Obtiene los detalles de un agente específico por su ID"""
+    usuario = db.query(Usuario).filter(Usuario.id == agente_id, Usuario.rol.has(nombre="Agente")).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Agente no encontrado")
+    
+    return {
+        "id": usuario.id,
+        "nombre_completo": usuario.nombre_completo,
+        "correo": usuario.correo,
+        "rol": usuario.rol.nombre,
+        "foto": usuario.foto
+    }
 
 @router.post("/registro")
 def registro_agente(

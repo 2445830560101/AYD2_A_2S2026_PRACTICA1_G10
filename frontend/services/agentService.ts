@@ -3,7 +3,7 @@ import { Agent } from "@/types/User"
 
 
 export async function get_agents(): Promise<Agent[]> {
-    const res = await fetch(`${API_URL}/usuarios/agentes`, {
+    const res = await fetch(`${API_URL}/agentes/`, {
         method: 'GET',
         headers: getHeaders(),
     })
@@ -18,7 +18,7 @@ export async function get_agents(): Promise<Agent[]> {
 }
 
 export async function get_agent_by_id(id: number): Promise<Agent | null> {
-    const res = await fetch(`${API_URL}/usuarios/agentes/${id}`, {
+    const res = await fetch(`${API_URL}/agentes/${id}`, {
         method: 'GET',
         headers: getHeaders(),
     })

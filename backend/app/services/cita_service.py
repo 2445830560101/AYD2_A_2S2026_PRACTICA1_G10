@@ -85,3 +85,37 @@ def obtener_agenda(db: Session, agente_id: int):
         Cita.agente_id == agente_id, 
         Cita.estado.in_(["confirmada", "enviada"])
         ).all()
+
+# Cancelar cita (rechazar propuesta)
+def cancelar_cita(db: Session, cita_id: int, motivo_rechazo: str, current_user):
+    cita = obtener_cita(db, cita_id)
+
+    # Validar que el usuario sea el cliente de la cita
+    if cita.cliente_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No tienes permiso para rechazar esta cita")
+    
+    if cita.estado == "cancelada":
+        raise HTTPException(status_code=400, detail="La cita ya ha sido cancelada")
+    
+    cita.estado = "cancelada"
+    cita.motivo_rechazo = motivo_rechazo
+
+    db.commit()
+    db.refresh(cita)
+    return cita
+
+# Aceptar cita (propuesta recibida -> confirmada)
+def aceptar_cita(db: Session, cita_id: int, current_user):
+    cita = obtener_cita(db, cita_id)
+
+    # Validar que el usuario sea el cliente de la cita
+    if cita.cliente_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No tienes permiso para aceptar esta cita")
+
+    if cita.estado != "enviada":
+        raise HTTPException(status_code=400, detail="Solo las propuestas enviadas pueden ser aceptadas")
+    
+    cita.estado = "confirmada"
+    db.commit()
+    db.refresh(cita)
+    return cita

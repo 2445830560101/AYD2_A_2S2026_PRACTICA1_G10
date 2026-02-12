@@ -119,6 +119,45 @@ def eliminar_propiedades(db: Session, propiedad_id: int, usuario: Usuario) -> No
 
 
 def obtener_propiedades(
+    db: Session,
+    tipo_id: Optional[int] = None,
+    precio_min: Optional[float] = None,
+    precio_max: Optional[float] = None,
+    habitaciones: Optional[int] = None,
+    banos: Optional[int] = None
+):
+
+    query = db.query(Propiedad)
+    # Validar rango de precios
+    if precio_min is not None and precio_max is not None:
+        if precio_min > precio_max:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El precio mínimo no puede ser mayor que el precio máximo"
+            )
+    # Aplicar filtros
+    # filtrar por tipo de inmueble
+    if tipo_id is not None:
+        query = query.filter(Propiedad.tipo_id == tipo_id)
+    # filtrar por precio mínimo
+    if precio_min is not None:
+        query = query.filter(Propiedad.precio >= precio_min)
+    # filtrar por precio máximo
+    if precio_max is not None:
+        query = query.filter(Propiedad.precio <= precio_max)
+    # filtrar por número de habitaciones
+    if habitaciones is not None:
+        query = query.filter(Propiedad.habitaciones >= habitaciones)
+
+    # filtrar por número de baños
+    if banos is not None:
+        query = query.filter(Propiedad.banos >= banos)
+    # Ordenar por más reciente
+    query = query.order_by(desc(Propiedad.id))
+
+    return query.all()
+
+def obtener_propiedades_agente(
         db: Session,
         usuario: Usuario,
         tipo_id: Optional[int] = None,

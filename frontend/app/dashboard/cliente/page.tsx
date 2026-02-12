@@ -6,21 +6,37 @@ import AppointmentModal from '@/components/cliente/AppointmentModal';
 import { Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import { Property } from '@/types/Property';
 import { fetch_properties } from '@/services/PropertyService'
-import { add_favorite } from '@/services/clientService';
-import { useAuth } from '@/context/AuthContext';
+import { add_favorite, add_appointment } from '@/services/clientService';
 
 
 export default function ClienteDashboard() {
-    const { user } = useAuth();
     const [properties, setProperties] = useState<Property[]>([]);
     const [search, setSearch] = useState('');
-    const [selectedProp, setSelectedProp] = useState(null);
+    const [selectedProp, setSelectedProp] = useState<Property | null>(null);
 
     const filtered = properties.filter(p => p.titulo.toLowerCase().includes(search.toLowerCase()));
 
-    const addToFav = (id: number) => {
-        add_favorite(user?.id ?? 0, id)
-        alert(`Favorito añadido`);
+    const addToFav = async (id: number) => {
+        try {
+            await add_favorite(id);
+            alert('Favorito agregado correctamente');
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error al agregar favorito';
+            alert(errorMessage);
+        }
+    }
+
+    const agendarCita = async (dateTime: string) => {
+        if (!selectedProp) return;
+        
+        try {
+            await add_appointment(selectedProp.id, dateTime);
+            alert(`Cita agendada exitosamente para ${selectedProp.titulo}`);
+            setSelectedProp(null);
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error al agendar cita';
+            alert(errorMessage);
+        }
     }
 
     useEffect(() => {
@@ -56,7 +72,7 @@ export default function ClienteDashboard() {
                                 <Button variant="success" className="flex-grow-1 rounded-pill" onClick={() => addToFav(prop.id)}>
                                     Agregar a Favoritos
                                 </Button>
-                                <Button variant="primary" className="flex-grow-1 rounded-pill" onClick={(p: any) => setSelectedProp(p)}>
+                                <Button variant="primary" className="flex-grow-1 rounded-pill" onClick={() => setSelectedProp(prop)}>
                                     Agendar Cita
                                 </Button>
                             </PropertyCard>
@@ -68,6 +84,7 @@ export default function ClienteDashboard() {
                     show={!!selectedProp}
                     handleClose={() => setSelectedProp(null)}
                     property={selectedProp}
+                    onConfirm={agendarCita}
                 />
             </div>
         </div>

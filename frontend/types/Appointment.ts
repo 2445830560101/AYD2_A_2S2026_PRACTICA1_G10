@@ -1,9 +1,8 @@
 export enum ViewingStatus {
     PENDIENTE = 'pendiente',
+    ENVIADA = 'enviada',
     CONFIRMADA = 'confirmada',
-    CANCELADA = 'cancelada',
-    PROPUESTA_RECIBIDA = 'propuesta_recibida',
-    RECHAZADA = 'rechazada'
+    CANCELADA = 'cancelada'
 }
 
 export interface Appointment {
