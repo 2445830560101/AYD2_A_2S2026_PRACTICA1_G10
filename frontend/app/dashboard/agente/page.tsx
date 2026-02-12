@@ -2,18 +2,54 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import RoleSidebar from '@/components/RoleSidebar';
+import { get_agent_properties } from '@/services/propertyAgentService';
+import { get_appointment_requests, get_agent_scheduled_appointments } from '@/services/agentService';
+import { ViewingStatus } from '@/types/Appointment';
 
 export default function AgenteDashboard() {
   const { user } = useAuth();
   const router = useRouter();
+
+  const [propiedadesTotal, setPropiedadesTotal] = useState(0);
+  const [solicitudesPendientes, setSolicitudesPendientes] = useState(0);
+  const [citasConfirmadas, setCitasConfirmadas] = useState(0);
+  const [citasRechazadas, setCitasRechazadas] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user || user.rol !== 'agente') {
       // router.push('/');
     }
   }, [user, router]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        // Obtener propiedades
+        const propiedades = await get_agent_properties();
+        setPropiedadesTotal(propiedades.length);
+        
+        // Obtener solicitudes pendientes
+        const solicitudes = await get_appointment_requests();
+        setSolicitudesPendientes(solicitudes.filter(c => c.estado === ViewingStatus.PENDIENTE).length);
+        
+        // Obtener agenda (confirmadas y rechazadas)
+        const agenda = await get_agent_scheduled_appointments();
+        setCitasConfirmadas(agenda.filter(c => c.estado === ViewingStatus.CONFIRMADA).length);
+        setCitasRechazadas(agenda.filter(c => c.estado === ViewingStatus.CANCELADA).length);
+      } catch (error) {
+        console.error('Error cargando datos del dashboard:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   // if (!user) return null;
 
@@ -33,183 +69,61 @@ export default function AgenteDashboard() {
         <div className="row">
           {/* Resumen de propiedades */}
           <div className="col-md-6 mb-4">
-            <div className="card h-100">
+            <div className="card h-100 shadow-sm">
               <div className="card-body">
-                <h5 className="card-title">Resumen de Propiedades</h5>
-                <div className="d-flex justify-content-between mb-3">
-                  <div>
-                    <p className="card-text">Propiedades Registradas</p>
-                    <h3 className="fw-bold">12</h3>
+                <h5 className="card-title text-primary">
+                  <i className="bi bi-house-door me-2"></i>
+                  Resumen de Propiedades
+                </h5>
+                {loading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Cargando...</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="card-text">Propiedades Activas</p>
-                    <h3 className="fw-bold">10</h3>
+                ) : (
+                  <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '150px' }}>
+                    <div className="text-center">
+                      <p className="card-text text-muted mb-2">Propiedades Registradas</p>
+                      <h1 className="fw-bold text-success display-4">{propiedadesTotal}</h1>
+                    </div>
                   </div>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <p className="card-text">Propiedades Pendientes</p>
-                    <h3 className="fw-bold">2</h3>
-                  </div>
-                  <div>
-                    <p className="card-text">Propiedades Eliminadas</p>
-                    <h3 className="fw-bold">5</h3>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Resumen de citas */}
           <div className="col-md-6 mb-4">
-            <div className="card h-100">
+            <div className="card h-100 shadow-sm">
               <div className="card-body">
-                <h5 className="card-title">Resumen de Citas</h5>
-                <div className="d-flex justify-content-between mb-3">
-                  <div>
-                    <p className="card-text">Solicitudes Pendientes</p>
-                    <h3 className="fw-bold">8</h3>
+                <h5 className="card-title text-primary">
+                  <i className="bi bi-calendar-check me-2"></i>
+                  Resumen de Citas
+                </h5>
+                {loading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Cargando...</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="card-text">Citas Confirmadas</p>
-                    <h3 className="fw-bold">15</h3>
+                ) : (
+                  <div className="d-flex justify-content-around align-items-center" style={{ minHeight: '150px' }}>
+                    <div className="text-center">
+                      <p className="card-text text-muted mb-2">Pendientes</p>
+                      <h2 className="fw-bold text-warning">{solicitudesPendientes}</h2>
+                    </div>
+                    <div className="text-center">
+                      <p className="card-text text-muted mb-2">Confirmadas</p>
+                      <h2 className="fw-bold text-success">{citasConfirmadas}</h2>
+                    </div>
+                    <div className="text-center">
+                      <p className="card-text text-muted mb-2">Rechazadas</p>
+                      <h2 className="fw-bold text-danger">{citasRechazadas}</h2>
+                    </div>
                   </div>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <p className="card-text">Citas Rechazadas</p>
-                    <h3 className="fw-bold">3</h3>
-                  </div>
-                  <div>
-                    <p className="card-text">Citas Agendadas</p>
-                    <h3 className="fw-bold">12</h3>
-                  </div>
-                </div>
+                )}
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Propiedades recientes */}
-        <div className="card mb-4">
-          <div className="card-header bg-primary text-white">
-            <h5 className="mb-0">Propiedades Recientes</h5>
-          </div>
-          <div className="card-body">
-            <div className="table-responsive">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Dirección</th>
-                    <th>Tipo</th>
-                    <th>Precio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>#1001</td>
-                    <td>Departamento Moderno</td>
-                    <td>Calle Principal 123</td>
-                    <td>Apartamento</td>
-                    <td>$250,000</td>
-                    <td><span className="badge bg-success">Activo</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary me-1">Ver</button>
-                      <button className="btn btn-sm btn-warning me-1">Editar</button>
-                      <button className="btn btn-sm btn-danger">Eliminar</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#1002</td>
-                    <td>Casa Familiar</td>
-                    <td>Avenida Central 456</td>
-                    <td>Casa</td>
-                    <td>$380,000</td>
-                    <td><span className="badge bg-success">Activo</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary me-1">Ver</button>
-                      <button className="btn btn-sm btn-warning me-1">Editar</button>
-                      <button className="btn btn-sm btn-danger">Eliminar</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#1003</td>
-                    <td>Local Comercial</td>
-                    <td>Plaza Comercial 789</td>
-                    <td>Local Comercial</td>
-                    <td>$150,000</td>
-                    <td><span className="badge bg-warning">Pendiente</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary me-1">Ver</button>
-                      <button className="btn btn-sm btn-warning me-1">Editar</button>
-                      <button className="btn btn-sm btn-danger">Eliminar</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* Citas recientes */}
-        <div className="card">
-          <div className="card-header bg-primary text-white">
-            <h5 className="mb-0">Citas Recientes</h5>
-          </div>
-          <div className="card-body">
-            <div className="table-responsive">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Propiedad</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>#2001</td>
-                    <td>María González</td>
-                    <td>Departamento Moderno</td>
-                    <td>15/02/2026</td>
-                    <td>10:00 AM</td>
-                    <td><span className="badge bg-success">Confirmada</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary">Ver</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#2002</td>
-                    <td>Juan Pérez</td>
-                    <td>Casa Familiar</td>
-                    <td>18/02/2026</td>
-                    <td>2:30 PM</td>
-                    <td><span className="badge bg-warning">Pendiente</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary">Ver</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#2003</td>
-                    <td>Ana Rodríguez</td>
-                    <td>Local Comercial</td>
-                    <td>20/02/2026</td>
-                    <td>11:00 AM</td>
-                    <td><span className="badge bg-danger">Rechazada</span></td>
-                    <td>
-                      <button className="btn btn-sm btn-primary">Ver</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>

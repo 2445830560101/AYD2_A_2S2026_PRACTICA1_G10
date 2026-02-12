@@ -56,6 +56,16 @@ export default function RoleSidebar({ role }: { role: Role }) {
                                 <i className="bi bi-calendar-check me-2"></i> Citas
                             </Link>
                         </li>
+
+                        {/* Clientes */}
+                        <li className="nav-item mb-1">
+                            <Link
+                                href="/agente/clientes"
+                                className={`nav-link ${pathname === '/agente/clientes' ? 'active bg-primary text-white' : 'text-dark'}`}
+                            >
+                                <i className="bi bi-people me-2"></i> Clientes
+                            </Link>
+                        </li>
                       
                         {/* Gráficas y Estadísticas */}
                         <li className="nav-item mb-1">

@@ -1025,6 +1025,35 @@
 
 ---
 
+### CU-06.01.04 - Ver Clientes
+
+| Campo | Detalle |
+| :--- | :--- |
+| **Descripción** | Permite al Agente consultar la lista de clientes en el sistema. |
+| **Actores** | Agente Inmobiliario. |
+| **Pre-condiciones** | 1. Agente ha iniciado sesión. <br> 2. Clientes registrados. |
+| **Post-condiciones** | Se despliega el listado completo de clientes. |
+| **Rendimiento** | El sistema debe responder en un máximo de 2 segundos. |
+| **Frecuencia** | Media de 10 a 100 veces al día por agente.
+| **Importancia** | Importante. |
+| **Urgencia** | Puede esperar. |
+| **Comentarios** | - |
+
+##### Secuencia Normal
+
+| # | Acción (Actor) | Reacción (Sistema) |
+| :--- | :--- | :--- |
+| 1 | Selecciona "Clientes" en la barra lateral. | Consulta BD y muestra listado de clientes. |
+| 2 | Visualiza detalles de cada cliente. | - |
+
+#### Excepciones
+
+| # | Situación (Causa) | Reacción (Sistema) |
+| :--- | :--- | :--- |
+| 1 | No hay clientes registrados. | Mostrar mensaje "No clientes encontrados". |
+
+---
+
 # Requerimientos Funcionales
 
 ## RF-02.0: Autenticación y Acceso
