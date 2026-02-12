@@ -5,6 +5,7 @@ from app.api.propiedad import router as propiedad_router
 from app.api.agentes import router as agentes_router
 from app.api.cita import router as cita_router
 from app.api.cliente import router as cliente_router
+from app.api.tipo_inmueble import router as tipo_inmueble_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
@@ -36,6 +37,7 @@ app.include_router(agentes_router)
 app.include_router(cita_router)
 app.include_router(cliente_router)
 app.include_router(foto_router)
+app.include_router(tipo_inmueble_router)
 
 # Montar la carpeta de fotos como estática
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
