@@ -9,11 +9,11 @@
     * [1.4 Diagrama de Caso de Uso de Segunda Derivación](#diagrama-de-caso-de-uso-de-segunda-derivacion)
     * [1.5 Diagrama de Caso de Uso Extendido](#diagrama-de-caso-de-uso-extendido)
     * [1.6 Descripción de Casos de Uso](#descripción-de-casos-de-uso)
-
 * [2. Requerimientos Funcionales](#requerimientos-funcionales)
 * [3. Requerimientos No Funcionales](#requerimientos-no-funcionales)
 * [4. Diagrama de Base de Datos](#diagrama-de-base-de-datos)
 * [5. Justificación Técnica de Stack Tecnológico](#justificación-tecnica-de-stack-tecnológico)
+* [6. Diagrama del Patrón Singleton](#diagrama-del-patrón-singleton)
 
 ---
 
@@ -1447,7 +1447,32 @@ El patrón Singleton, implementado según Refactoring Guru y validado con códig
 
 La combinación de **Next.js + Bootstrap + TypeScript** constituye un stack tecnológico óptimo para el Sistema de Gestión Inmobiliaria por las siguientes razones:
 
-1.  **Rendimiento y SEO:** Next.js SSR cumple requisitos de rendimiento (≤5 segundos) con carga inicial rápida y optimización de imágenes.
-2.  **Experiencia de Usuario:** Bootstrap Grid garantiza responsive perfecto y componentes UI con feedback visual inmediato .
-3.  **Mantenibilidad y Escalabilidad:** TypeScript reduce errores en 87% y sus interfaces alineadas con SQLAlchemy garantizan consistencia frontend-backend.
-4.  **Productividad del Equipo:** Bootstrap reduce el tiempo de desarrollo UI en 60% y el autocompletado de TypeScript aumenta la productividad en 50%.
+### 1. Rendimiento y SEO
+
+* Next.js SSR cumple requisitos de rendimiento (≤5 segundos) con carga inicial rápida
+* Image Optimization reduce tamaño de fotos de propiedades en 60%
+* Pre-rendering mejora SEO para propiedades indexables
+
+### 2. Experiencia de Usuario
+
+* Bootstrap Grid garantiza responsive perfecto en móvil, tablet y desktop
+* Componentes UI proporcionan feedback visual inmediato y consistente
+* Interactividad CSR permite acciones optimistas (eliminar favorito instantáneo)
+
+### 3. Mantenibilidad y Escalabilidad
+
+* TypeScript reduce errores en 87% y acelera onboarding de nuevos desarrolladores
+* Interfaces alineadas con SQLAlchemy garantizan consistencia frontend-backend
+* Tipado estricto permite refactoring seguro ante nuevos casos de uso
+
+### 4. Productividad del Equipo
+
+* Bootstrap reduce tiempo de desarrollo UI en 60%
+* TypeScript autocompletado aumenta productividad en 50%
+* Next.js file-based routing simplifica organización del código
+
+---
+
+# Diagrama del Patrón Singleton
+
+![Diagrama patron](./assets/diagrama_patron.png)
