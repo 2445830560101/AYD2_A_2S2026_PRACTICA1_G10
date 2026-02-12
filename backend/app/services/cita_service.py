@@ -79,11 +79,11 @@ def ver_motivo(db: Session, cita_id: int):
     return cita.motivo_rechazo
 
 
-#Agenda del agente
+#Agenda del agente (confirmadas y rechazadas)
 def obtener_agenda(db: Session, agente_id: int):
     return db.query(Cita).filter(
         Cita.agente_id == agente_id, 
-        Cita.estado.in_(["confirmada", "enviada"])
+        Cita.estado.in_(["confirmada", "enviada", "cancelada"])
         ).all()
 
 # Cancelar cita (rechazar propuesta)
