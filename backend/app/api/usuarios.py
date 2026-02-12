@@ -36,6 +36,7 @@ def get_current_user(
 
 @router.post("/registro")
 def registro_usuario(
+    rol: str = Form("Cliente"),
     nombre_completo: str = Form(...),
     correo: str = Form(...),
     password: str = Form(...),
@@ -49,7 +50,7 @@ def registro_usuario(
             password=password
         )
 
-        nuevo = registrar_usuario(db, usuario_data, foto)
+        nuevo = registrar_usuario(db, usuario_data, foto, rol)
 
         return {
             "message": "Usuario registrado correctamente",
@@ -69,6 +70,54 @@ def registro_usuario(
 def obtener_usuarios(db: Session = Depends(get_db)):
     """Obtiene la lista de todos los usuarios registrados"""
     usuarios = db.query(Usuario).all()
+    
+    return [
+        {
+            "id": usuario.id,
+            "nombre_completo": usuario.nombre_completo,
+            "correo": usuario.correo,
+            "rol": usuario.rol.nombre,
+            "foto": usuario.foto
+        }
+        for usuario in usuarios
+    ]
+
+@router.get("/clientes", response_model=List[UsuarioResponse])
+def obtener_clientes(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los clientes registrados"""
+    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Cliente")).all()
+    
+    return [
+        {
+            "id": usuario.id,
+            "nombre_completo": usuario.nombre_completo,
+            "correo": usuario.correo,
+            "rol": usuario.rol.nombre,
+            "foto": usuario.foto
+        }
+        for usuario in usuarios
+    ]
+
+@router.get("/agentes", response_model=List[UsuarioResponse])
+def obtener_agentes(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los agentes registrados"""
+    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Agente")).all()
+    
+    return [
+        {
+            "id": usuario.id,
+            "nombre_completo": usuario.nombre_completo,
+            "correo": usuario.correo,
+            "rol": usuario.rol.nombre,
+            "foto": usuario.foto
+        }
+        for usuario in usuarios
+    ]
+
+@router.get("/administradores", response_model=List[UsuarioResponse])
+def obtener_administradores(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los administradores registrados"""
+    usuarios = db.query(Usuario).filter(Usuario.rol.has(nombre="Administrador")).all()
     
     return [
         {

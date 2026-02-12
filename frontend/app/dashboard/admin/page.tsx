@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import RoleSidebar from '@/components/RoleSidebar';
-import { Container, Table, Button, Card, Modal, Form, Alert, Badge } from 'react-bootstrap';
-import { get_agents, create_agent, update_agent, delete_agent } from '@/services/adminService';
+import { Container, Table, Button, Card, Modal, Form, Alert } from 'react-bootstrap';
+import { get_agents } from '@/services/agentService';
+import { update_user, delete_user } from '@/services/userService'
 import { User } from '@/types/User';
+import { register_user } from '@/services/authService';
+import { getImageUrl } from '@/utils/imageUtils'
 
 export default function GestionAgentesPage() {
     const [agents, setAgents] = useState<User[]>([]);
@@ -39,6 +42,12 @@ export default function GestionAgentesPage() {
         fetchAgents();
     }, []);
 
+    useEffect(() => {
+        return () => {
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+        }
+    }, [previewUrl])
+
     // Limpiar formulario
     const resetForm = () => {
         setFormData({ id: 0, nombre_completo: '', correo: '', password: '' });
@@ -46,34 +55,36 @@ export default function GestionAgentesPage() {
         setPreviewUrl(null);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setPhotoFile(file);
-            // Generar URL temporal para ver la imagen antes de subirla
-            setPreviewUrl(URL.createObjectURL(file));
+            const url = URL.createObjectURL(file)
+            setPreviewUrl(url)
         }
     };
 
-    // --- CU-02.01.01: Registrar Agente ---
     const handleCreateSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         try {
-            // Enviamos el objeto con el archivo
-            await create_agent({
-                ...formData,
-                foto: photoFile // Pasamos el archivo File
-            });
+            await register_user(
+                'Agente',
+                formData.nombre_completo,
+                formData.correo,
+                formData.password,
+                photoFile || undefined
+            );
             await fetchAgents();
             setShowCreateModal(false);
             resetForm();
         } catch (err: any) {
-            setError(err.message || 'Error al registrar agente');
+            setError(err.message || 'Error al registrar cliente')
+        } finally {
+            setLoading(false)
         }
     };
 
-    // --- CU-02.01.02: Actualizar Agente (Preparación) ---
     const handleEditClick = (agent: User) => {
         setFormData({
             id: agent.id,
@@ -94,11 +105,12 @@ export default function GestionAgentesPage() {
 
     const handleConfirmEdit = async () => {
         try {
-            await update_agent(formData.id, {
-                nombre_completo: formData.nombre_completo,
-                ...(formData.password && { password: formData.password }),
-                ...(photoFile && { foto: photoFile })
-            })
+            await update_user(
+                formData!.id,
+                formData.nombre_completo,
+                formData.password,
+                (photoFile as any)
+            )
             await fetchAgents()
             setShowConfirmEditModal(false)
             resetForm()
@@ -107,7 +119,6 @@ export default function GestionAgentesPage() {
         }
     };
 
-    // --- CU-02.01.04: Eliminar Agente ---
     const handleDeleteClick = (id: number) => {
         setSelectedAgentId(id)
         setShowDeleteModal(true)
@@ -115,7 +126,7 @@ export default function GestionAgentesPage() {
 
     const handleConfirmDelete = async () => {
         if (selectedAgentId) {
-            await delete_agent(selectedAgentId)
+            await delete_user(selectedAgentId)
             await fetchAgents()
             setShowDeleteModal(false)
             setSelectedAgentId(null)
@@ -152,7 +163,7 @@ export default function GestionAgentesPage() {
                                 {loading ? (
                                     <tr><td colSpan={4} className="text-center p-4">Cargando...</td></tr>
                                 ) : agents.length === 0 ? (
-                                    <tr><td colSpan={4} className="text-center p-4 text-muted">No hay agentes registrados (Excepción 1)</td></tr>
+                                    <tr><td colSpan={4} className="text-center p-4 text-muted">No hay agentes registrados</td></tr>
                                 ) : (
                                     agents.map(agent => (
                                         <tr key={agent.id}>
@@ -170,9 +181,12 @@ export default function GestionAgentesPage() {
                                                             }}
                                                         />
                                                     ) : null}
-                                                    <div className={`bg-primary text-white rounded-circle d-flex align-items-center justify-content-center ${agent.foto ? 'd-none' : ''}`} style={{ width: 35, height: 35 }}>
-                                                        {agent.nombre_completo.charAt(0)}
-                                                    </div>
+                                                    <img
+                                                        src={getImageUrl(agent.foto)}
+                                                        alt={agent.nombre_completo}
+                                                        className="rounded-circle object-fit-cover"
+                                                        style={{ width: 35, height: 35 }}
+                                                    />
                                                     {agent.nombre_completo}
                                                 </div>
                                             </td>
@@ -233,14 +247,14 @@ export default function GestionAgentesPage() {
                             <Form.Control
                                 type="file"
                                 accept="image/*"
-                                onChange={handleFileChange}
+                                onChange={handleImageChange}
                             />
 
                             {previewUrl && (
                                 <div className="mt-3 text-center">
                                     <div className="d-inline-block position-relative">
                                         <img
-                                            src={previewUrl}
+                                            src={getImageUrl(previewUrl)}
                                             alt="Previsualización"
                                             className="rounded-circle object-fit-cover border shadow-sm"
                                             style={{ width: 100, height: 100 }}
@@ -303,14 +317,14 @@ export default function GestionAgentesPage() {
                             <Form.Control
                                 type="file"
                                 accept="image/*"
-                                onChange={handleFileChange}
+                                onChange={handleImageChange}
                             />
 
                             {previewUrl && (
                                 <div className="mt-3 text-center">
                                     <div className="d-inline-block position-relative">
                                         <img
-                                            src={previewUrl}
+                                            src={getImageUrl(previewUrl)}
                                             alt="Previsualización"
                                             className="rounded-circle object-fit-cover border shadow-sm"
                                             style={{ width: 100, height: 100 }}
