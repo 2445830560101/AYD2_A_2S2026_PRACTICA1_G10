@@ -114,3 +114,22 @@ export async function create_property_type(nombre: string): Promise<{ id: number
     const data: { id: number; nombre: string } = await res.json()
     return data
 }
+
+// Subir imagen de propiedad
+export async function upload_property_image(propertyId: number, file: File): Promise<string> {
+    const formData = new FormData()
+    formData.append("foto", file)
+
+    const res = await fetch(`${API_URL}/propiedades/${propertyId}/fotos`, {
+        method: 'POST',
+        headers: getFormHeaders(), // 🔥 usa esto, NO getHeaders()
+        body: formData
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Error al subir imagen");
+    }
+
+    return res.json()
+}

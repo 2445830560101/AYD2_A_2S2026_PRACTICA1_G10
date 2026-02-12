@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from app.core.database import Base
+from app.core.database import Base  # <--- Esto faltaba
 
 
 class Propiedad(Base):
@@ -20,3 +20,10 @@ class Propiedad(Base):
 
     agente = relationship("Usuario", backref="propiedades")
     tipo = relationship("TipoInmueble", backref="propiedades")
+
+    # 🔥 AGREGAR ESTO
+    fotos = relationship(
+        "FotoPropiedad",
+        back_populates="propiedad",
+        cascade="all, delete-orphan"
+    )
