@@ -5,7 +5,7 @@ import { Property } from "@/types/Property"
 
 export async function get_clients(): Promise<Client[]> {
 
-    const res = await fetch(`${API_URL}/usuarios/clientes`, {
+    const res = await fetch(`${API_URL}/clientes/`, {
         method: 'GET',
         headers: getHeaders(),
     })
