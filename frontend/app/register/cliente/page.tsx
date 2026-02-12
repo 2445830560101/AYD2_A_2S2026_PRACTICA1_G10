@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Form, Button, Container, Alert, Card, Image } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
-import { register_client } from '@/services/authService';
+import { register_user } from '@/services/authService';
 import { Client } from "@/types/User";
 
 export default function RegisterClientPage() {
@@ -46,7 +46,8 @@ export default function RegisterClientPage() {
         setLoading(true)
         setError(null)
         try {
-            await register_client(
+            await register_user(
+                'Cliente',
                 formData.nombre_completo,
                 formData.correo,
                 formData.password,
@@ -58,7 +59,7 @@ export default function RegisterClientPage() {
         } finally {
             setLoading(false)
         }
-    };
+    }
 
     return (
         <Container fluid className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: '100vh' }}>

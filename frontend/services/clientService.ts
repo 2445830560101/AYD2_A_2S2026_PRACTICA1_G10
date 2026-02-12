@@ -3,26 +3,20 @@ import { Client, createClient } from "@/types/User"
 import { Appointment, ViewingStatus } from "@/types/Appointment"
 import { Property } from "@/types/Property"
 
-let mockup_data = <Client[]>[
-    createClient({
-        id: 1,
-        nombre_completo: 'Juan Pérez',
-        correo: 'juan@gmail.com',
-        password: 'hashed_password',
-        foto: 'https://placehold.co/200x200'
-    }),
-    createClient({
-        id: 2,
-        nombre_completo: 'María Gómez',
-        correo: 'mar@gmail.com',
-        password: 'hashed_password',
-        foto: 'https://placehold.co/200x200'
-    })
-]
-
 export async function get_clients(): Promise<Client[]> {
 
-    return new Promise<Client[]>((resolve) => setTimeout(() => resolve(mockup_data), 500));
+    const res = await fetch(`${API_URL}/usuarios/clientes`, {
+        method: 'GET',
+        headers: getHeaders(),
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Error al conectar con el servidor");
+    }
+
+    const data: Client[] = await res.json()
+    return data
 }
 
 // Favoritos
@@ -129,59 +123,4 @@ export async function accept_appointment(appointment_id: number): Promise<void> 
 export async function reject_appointment(appointment_id: number, reasong: string): Promise<void> {
     // TODO: Implementar rechazo de cita
     // Cambio a estado "cancelada"
-}
-
-// Perfil
-
-export async function get_client_profile(cliente_id: number): Promise<Client> {
-    // TODO: Implementar carga de perfil de cliente
-    const mockup_data = createClient({
-        id: cliente_id,
-        nombre_completo: 'Juan Pérez',
-        correo: 'juan@gmail.com',
-        password: 'hashed_password',
-        foto: 'https://placehold.co/200x200'
-    });
-
-    return mockup_data;
-}
-
-export async function update_client(cliente_id: number, nombre_completo: string, password: string, foto: string): Promise<void> {
-
-    const formData = new FormData();
-    formData.append("nombre_completo", nombre_completo)
-    formData.append("usuario_id", cliente_id.toString())
-    formData.append("password", password)
-
-    if (foto) {
-        formData.append("foto", foto)
-    }
-
-    if (!nombre_completo && !password && !foto) {
-        throw new Error("Al menos un campo debe ser actualizado")
-    }
-
-    const res = await fetch(`${API_URL}/usuarios/me`, {
-        method: "POST",
-        headers: getFormHeaders(),
-        body: formData,
-    })
-
-    if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.message || "Error al registrar cliente")
-    }
-}
-
-export async function delete_client(cliente_id: number): Promise<void> {
-
-    const res = await fetch(`${API_URL}/usuarios/delete/${cliente_id}`, {
-        method: 'DELETE',
-        headers: getHeaders(),
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Error al eliminar el cliente");
-    }
 }

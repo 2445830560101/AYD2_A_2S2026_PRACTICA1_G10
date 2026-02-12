@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import RoleSidebar from '@/components/RoleSidebar'
 import { Container, Card, Form, Button, Image, Modal, Alert, Row, Col } from 'react-bootstrap'
 import { useAuth } from '@/context/AuthContext'
-import { update_client, delete_client } from '@/services/clientService'
+import { update_user, delete_user } from '@/services/userService'
 import { getImageUrl } from '@/utils/imageUtils'
 import { useRouter } from 'next/navigation'
 
@@ -57,7 +57,7 @@ export default function PerfilPage() {
         setMessage(null)
 
         try {
-            await update_client(
+            await update_user(
                 user!.id,
                 formData.nombre_completo,
                 formData.password,
@@ -86,7 +86,7 @@ export default function PerfilPage() {
     const confirmDelete = async () => {
         setLoading(true)
         try {
-            await delete_client(user!.id);
+            await delete_user(user!.id);
             logout()
             setMessage({ type: 'success', text: 'Cuenta eliminada correctamente.' })
             router.push('/')

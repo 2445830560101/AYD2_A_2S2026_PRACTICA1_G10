@@ -29,13 +29,15 @@ export async function login(
 }
 
 
-export async function register_client(
+export async function register_user(
+	rol: string,
 	nombre_completo: string,
 	correo: string,
 	password: string,
 	foto?: File
 ): Promise<Client> {
 	const formData = new FormData();
+	formData.append("rol", rol)
 	formData.append("nombre_completo", nombre_completo)
 	formData.append("correo", correo)
 	formData.append("password", password)
